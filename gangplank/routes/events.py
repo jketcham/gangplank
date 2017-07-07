@@ -23,6 +23,7 @@ class EventsResource(object):
         if error:
             raise falcon.HTTPBadRequest('Missing data', error)
 
+        # TODO: add current user as 'creator' of event
         event = Event(
             name=result['name'],
             start_date=result['start_date'],

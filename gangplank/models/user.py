@@ -25,6 +25,7 @@ class User(Document):
         if not password:
             return False
 
+        # TODO: make password comparison time safe
         pw = self.email + password
         return bcrypt.checkpw(pw.encode('utf8'), self.pw_hash.encode('utf8'))
 

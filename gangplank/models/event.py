@@ -19,4 +19,4 @@ class Event(Document):
     description = StringField(max_length=1000)
     end_date = DateTimeField()
     created_date = DateTimeField(defautl=datetime.now)
-    owner = EmbeddedDocumentField(EmbeddedUser)
+    creator = EmbeddedDocumentField(EmbeddedUser)
