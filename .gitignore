@@ -101,3 +101,10 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+# ignore docker nginx folders
+docker/nginx/certs/
+docker/nginx/conf.d/
+docker/nginx/data/
+docker/nginx/html/
+docker/nginx/vhost.d/
