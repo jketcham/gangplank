@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Gangplank</title>
+    <meta name="description" content="Gangplank Chandler web resources. Always dangerous.">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <base href="/">
+  </head>
+  <body>
+    <div id="root"></div>
+    {# TODO: add bundle hash to filename #}
+    <script src="{{ config.web_host }}/static/main.bundle.js"></script>
+  <script>
+    var __INITIAL_STATE__ = {{ initial_state }};
+  </script>
+  </body>
+</html>

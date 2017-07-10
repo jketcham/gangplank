@@ -11,8 +11,6 @@ from .user import EmbeddedUser
 
 
 class Event(Document):
-    # TODO: create unique index on start_date and location/room
-    # TODO: make `room` field refernce Room model
     name = StringField(required=True)
     start_date = DateTimeField(required=True)
     location = StringField()

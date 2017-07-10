@@ -24,3 +24,8 @@ class UpdateUserSchema(UserSchema):
     name = fields.String()
     bio = fields.String()
     website = fields.String()
+
+
+class EmbeddedUserSchema(Schema):
+    id = fields.String()
+    name = fields.String()

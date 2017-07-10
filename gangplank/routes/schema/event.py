@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 
+from .user import EmbeddedUserSchema
+
 
 class EventSchema(Schema):
     id = fields.String()
@@ -10,6 +12,7 @@ class EventSchema(Schema):
     date_created = fields.DateTime()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
+    creator = fields.Nested(EmbeddedUserSchema())
 
 
 class CreateEventSchema(EventSchema):

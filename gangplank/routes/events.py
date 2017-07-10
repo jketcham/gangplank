@@ -23,11 +23,16 @@ class EventsResource(object):
         if error:
             raise falcon.HTTPBadRequest('Missing data', error)
 
-        # TODO: add current user as 'creator' of event
+        context_user = {
+            'id': req.context['user']['id'],
+            'name': req.context['user']['name'],
+        }
+
         event = Event(
             name=result['name'],
             start_date=result['start_date'],
             description=result['description'],
+            creator=context_user,
         ).save()
 
         event_schema = EventSchema()
