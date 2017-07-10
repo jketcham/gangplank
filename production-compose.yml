@@ -8,11 +8,10 @@ services:
       - redis
       - nginx
     environment:
-      - VIRTUAL_HOST=localhost
+      - VIRTUAL_HOST=chandler.gangplank.space
       - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=chandler.gangplank.space
       - LETSENCRYPT_EMAIL=jack@jackketcham.com
-      - LETSENCRYPT_TEST=true
   mongo:
     image: "mongo:3.4.5"
     restart: unless-stopped
