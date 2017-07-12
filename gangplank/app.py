@@ -14,6 +14,7 @@ def create_app(config):
     api.add_route('/api/users', users.UsersResource())
     api.add_route('/api/users/{user_id}', users.UserResource())
     api.add_route('/api/events', events.EventsResource())
+    api.add_route('/api/events/{event_id}', events.EventResource())
     api.add_route('/api/session', sessions.Resource())
 
     # serve frontend

@@ -7,6 +7,25 @@ from graceful.authorization import authentication_required
 from .schema.event import EventSchema, CreateEventSchema
 
 
+class EventResource(object):
+    def on_get(self, req, resp, event_id):
+        event = Event.objects(id=event_id).first()
+
+        if not event:
+            raise falcon.HTTPNotFound()
+
+        event_schema = EventSchema()
+        result = event_schema.dump(event)
+
+        resp.body = json.dumps(result.data)
+
+    # TODO: implement updating event
+    @authentication_required
+    def on_patch(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps({'ok': True})
+
+
 class EventsResource(object):
     def on_get(self, req, resp):
         events = Event.objects
