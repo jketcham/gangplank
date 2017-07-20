@@ -24,7 +24,7 @@ const fetchUserEpic = action$ =>
   action$.ofType(FETCH_USER_PENDING)
     .mergeMap(action =>
       ajax(`/api/users/${action.payload.id}`).map(
-        response => fetchUserComplete(response),
+        ({ response }) => fetchUserComplete(response),
       ),
     ).catch(error => Observable.of(fetchUserError(error)));
 

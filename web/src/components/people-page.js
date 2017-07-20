@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { getPeople } from '../store/users/selectors';
 import { fetchUsers } from '../store/users/actions';
@@ -18,13 +19,11 @@ class PeoplePage extends Component {
     this.props.fetchUsers();
   }
 
-  renderPerson = (person) => {
-    return (
-      <div key={person.get('id')}>
-        {person.get('name')}
-      </div>
-    );
-  }
+  renderPerson = person => (
+    <div key={person.get('id')}>
+      <Link to={`/people/${person.get('id')}`}>{person.get('name')}</Link>
+    </div>
+  );
 
   render() {
     return (

@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 
 
 const getPeople = state =>
-  state.getIn(['entities', 'users']).toList();
+  state.getIn(['entities', 'users']);
 
 const getPersonId = (state, props) =>
   props.match.params.userId;
