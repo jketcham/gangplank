@@ -3,14 +3,30 @@ import { createReducer } from 'redux-immutablejs';
 
 import {
   LOGIN_COMPLETE,
+  REGISTER_COMPLETE,
+  LOGOUT_COMPLETE,
 } from './actions';
 
 
-const INITIAL_STATE = new Immutable.Map();
+let user = window.localStorage.getItem('user');
 
-const handleLoginComplete = (state, action) =>
-  state.merge(action.payload);
+if (user !== undefined) {
+  user = JSON.parse(user);
+} else {
+  user = {};
+}
+
+const INITIAL_STATE = new Immutable.Map(Immutable.fromJS(user));
+
+const handleSessionCreate = (state, action) =>
+  state.merge(action.payload.user);
+
+const handleLogout = (state, action) =>
+  INITIAL_STATE.clear();
+
 
 export default createReducer(INITIAL_STATE, {
-  [LOGIN_COMPLETE]: handleLoginComplete,
+  [LOGIN_COMPLETE]: handleSessionCreate,
+  [REGISTER_COMPLETE]: handleSessionCreate,
+  [LOGOUT_COMPLETE]: handleLogout,
 });

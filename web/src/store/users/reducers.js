@@ -5,11 +5,7 @@ import { createReducer } from 'redux-immutablejs';
 import { FETCH_USERS_COMPLETE } from './actions';
 
 
-const user = window.__INITIAL_STATE__.user;
-
-const INITIAL_STATE = new Immutable.Map({
-  [user.id]: Immutable.fromJS(user),
-});
+const INITIAL_STATE = new Immutable.Map();
 
 
 function handleFetchUsersComplete(state, action) {
