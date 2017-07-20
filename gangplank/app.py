@@ -1,7 +1,7 @@
 import falcon
 from mongoengine import connect
-from graceful.authentication import Token
 
+from .authentication import JWT
 from .routes import users, sessions, events, static
 from .session import auth_storage
 from .config import config
@@ -10,7 +10,7 @@ from .config import config
 def create_app(config):
     connect(config.MONGO_DB, host=config.MONGO_HOST)
 
-    api = falcon.API(middleware=[Token(auth_storage)])
+    api = falcon.API(middleware=[JWT(auth_storage)])
     api.add_route('/api/users', users.UsersResource())
     api.add_route('/api/users/{user_id}', users.UserResource())
     api.add_route('/api/events', events.EventsResource())

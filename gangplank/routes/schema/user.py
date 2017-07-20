@@ -8,7 +8,9 @@ class UserSchema(Schema):
 
     bio = fields.String()
     website = fields.String()
+    roles = fields.List(fields.String())
 
+    verified = fields.Boolean()
     date_created = fields.DateTime()
 
 
@@ -29,3 +31,9 @@ class UpdateUserSchema(UserSchema):
 class EmbeddedUserSchema(Schema):
     id = fields.String()
     name = fields.String()
+
+
+class UserJWTSchema(Schema):
+    id = fields.String()
+    name = fields.String()
+    roles = fields.List(fields.String())

@@ -6,8 +6,9 @@ import bcrypt
 from mongoengine import NotUniqueError
 
 from gangplank.models import User
+from gangplank.session import auth_storage
 
-from .schema.user import CreateUserSchema, UserSchema, UpdateUserSchema
+from .schema.user import CreateUserSchema, UserSchema, UpdateUserSchema, UserJWTSchema
 
 
 class UsersResource(object):
@@ -33,17 +34,21 @@ class UsersResource(object):
 
         try:
             user = User(
-                    name=result['name'],
-                    email=result['email'],
-                    pw_hash=password_hash,
-                    ).save()
+                name=result['name'],
+                email=result['email'],
+                pw_hash=password_hash,
+            ).save()
         except NotUniqueError:
             raise falcon.HTTPBadRequest('Account already exists')
 
         user_schema = UserSchema()
         user_result = user_schema.dump(user)
 
-        resp.body = json.dumps(user_result.data)
+        payload_schema = UserJWTSchema()
+        user_payload = payload_schema.dump(user)
+        token = auth_storage.get_auth_token(user_payload.data)
+
+        resp.body = json.dumps({'token': token, 'user': user_result.data})
         resp.status = falcon.HTTP_201
 
 

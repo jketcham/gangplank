@@ -1,12 +1,11 @@
 import json
-import uuid
 
 import falcon
 
-from graceful.authentication import Token
-
 from gangplank.session import auth_storage
 from gangplank.models import User
+
+from .schema.user import UserSchema, UserJWTSchema
 
 
 class Resource(object):
@@ -19,12 +18,11 @@ class Resource(object):
         if not user.check_password(req_content['password']):
             raise falcon.HTTPBadRequest('Incorrect password')
 
-        token_user = {
-            'id': str(user.id),
-            'name': user.name,
-        }
-        token = uuid.uuid4().hex
+        schema = UserSchema()
+        user_result = schema.dump(user)
 
-        auth_storage.register(Token(auth_storage), token, token_user)
+        payload_schema = UserJWTSchema()
+        user_payload = payload_schema.dump(user)
+        token = auth_storage.get_auth_token(user_payload.data)
 
-        resp.body = json.dumps({'token': token})
+        resp.body = json.dumps({'token': token, 'user': user_result.data})

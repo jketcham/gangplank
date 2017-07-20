@@ -1,18 +1,19 @@
 import os
 import importlib
-import hashlib
 
-from redis import StrictRedis as Redis
-from graceful.authentication import KeyValueUserStorage, Token
+from gangplank.models import User
+from gangplank.authentication import JWTAuthStorage
 
 
 # TODO: cleanup accessing config
 env = os.environ.get('ENV', 'default')
+secret = os.environ.get('GP_SECRET', 'not_a_secret')
 config = importlib.import_module('config.' + env)
 
-auth_storage = KeyValueUserStorage(Redis(host=config.REDIS_HOST))
+
+def user_loader(payload):
+    user = User.objects(id=payload['user']['id']).first()
+    return user
 
 
-@auth_storage.hash_identifier.register(Token)
-def _(identified_with, identifier):
-        return hashlib.sha1(identifier[1].encode()).hexdigest()
+auth_storage = JWTAuthStorage(user_loader, secret)

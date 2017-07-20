@@ -3,10 +3,12 @@ import bcrypt
 from datetime import datetime
 
 from mongoengine import (
+    BooleanField,
     DateTimeField,
     Document,
     EmailField,
     EmbeddedDocument,
+    ListField,
     ObjectIdField,
     StringField,
     URLField,
@@ -16,10 +18,18 @@ from mongoengine import (
 class User(Document):
     email = EmailField(required=True, unique=True)
     name = StringField(required=True, max_length=100)
-    pw_hash = StringField(required=True)
     bio = StringField(max_length=300)
     website = URLField()
+
+    roles = ListField(StringField())
+
+    email_verified = BooleanField(default=False)  # TODO: could add this as a role?
+    pw_hash = StringField(required=True)
     date_created = DateTimeField(default=datetime.now)
+
+    def add_roles(self, roles):
+        self.roles.append(roles)
+        self.save()
 
     def check_password(self, password):
         if not password:
