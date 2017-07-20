@@ -25,8 +25,13 @@ class RegisterForm extends Component {
   }
 
   handleChange = field => (event) => {
+    const value = event.target.value;
     this.setState(({ formValues }) => ({
-      formValues: formValues.setIn([field, 'value'], event.target.value),
+      formValues: formValues.updateIn(
+        [field, 'value'],
+        '',
+        fv => value,
+      ),
     }));
   }
 
@@ -72,7 +77,7 @@ class RegisterForm extends Component {
                 type="password"
                 id="password"
                 value={this.getFieldValue('password')}
-                onChange={this.handleChange('email')}
+                onChange={this.handleChange('password')}
               />
             </Col>
           </FormGroup>

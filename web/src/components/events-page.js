@@ -2,7 +2,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -54,6 +54,11 @@ class EventsPage extends Component {
           <Row>
             <Col>
               <h1 className="display-3">Events</h1>
+            </Col>
+            <Col>
+              <Button>
+                <Link to="/events/create">Create event</Link>
+              </Button>
             </Col>
           </Row>
           <Row>

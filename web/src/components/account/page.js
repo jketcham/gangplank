@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import {
   Button,
   Col,
   Container,
   Row,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { login } from '../../store/account/actions';
+import { login, register } from '../../store/account/actions';
+import { getAccount } from '../../store/account/selectors';
 import LoginForm from './login-form';
 import RegisterForm from './register-form';
 
 
 class AccountPage extends Component {
   static propTypes = {
+    account: ImmutablePropTypes.map.isRequired,
+    location: PropTypes.object.isRequired,
+
     login: PropTypes.func.isRequired,
     register: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-  };
-
-  static defaultProps = {
-    register: () => ({}),
   };
 
   getPathname() {
@@ -88,6 +88,10 @@ class AccountPage extends Component {
   }
 
   render() {
+    if (!this.props.account.isEmpty()) {
+      return <Redirect to="/" />;
+    }
+
     return (
       <div className="account-page">
         <Container>
@@ -112,10 +116,15 @@ class AccountPage extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  account: getAccount(state),
+});
+
 const mapDispatchToProps = {
   login,
+  register,
 };
 
-const connector = connect(null, mapDispatchToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default connector(AccountPage);

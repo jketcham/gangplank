@@ -18,9 +18,9 @@ class PeoplePage extends Component {
     this.props.fetchUsers();
   }
 
-  renderPerson(person) {
+  renderPerson = (person) => {
     return (
-      <div>
+      <div key={person.get('id')}>
         {person.get('name')}
       </div>
     );
