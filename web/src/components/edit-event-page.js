@@ -1,52 +1,45 @@
-import _ from 'lodash';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import { createEvent } from '../store/events/actions';
-import { getEventErrors } from '../store/events/selectors';
+import { fetchEvent, updateEvent } from '../store/events/actions';
+import { getEvent, getEventErrors } from '../store/events/selectors';
 import ControlledForm from './controlled-form';
 
 
-const CREATE_EVENT_FIELDS = new Immutable.List([
+const EDIT_EVENT_FIELDS = new Immutable.List([
   new Immutable.Map({
     name: 'name',
     title: 'Name',
     type: 'text',
-    required: true,
   }),
   new Immutable.Map({
     name: 'description',
     title: 'Description',
     type: 'textarea',
-    required: true,
   }),
   new Immutable.Map({
     name: 'start_date',
     title: 'Start date',
     type: 'date',
-    required: true,
   }),
   new Immutable.Map({
     name: 'starttime',
     title: 'Start time',
     type: 'time',
-    required: true,
   }),
   new Immutable.Map({
     name: 'end_date',
     title: 'End date',
     type: 'date',
-    required: true,
   }),
   new Immutable.Map({
     name: 'endtime',
     title: 'End time',
     type: 'time',
-    required: true,
   }),
   new Immutable.Map({
     name: 'promote',
@@ -56,39 +49,59 @@ const CREATE_EVENT_FIELDS = new Immutable.List([
 ]);
 
 
-class CreateEventPage extends Component {
+class EditEventPage extends Component {
   static propTypes = {
-    createEvent: PropTypes.func.isRequired,
+    updateEvent: PropTypes.func.isRequired,
+    fetchEvent: PropTypes.func.isRequired,
+    event: ImmutablePropTypes.map.isRequired,
     eventError: ImmutablePropTypes.map.isRequired,
+    match: PropTypes.object.isRequired,
   };
+
+  static defaultProps = {
+    event: new Immutable.Map(),
+  };
+
+  componentWillMount() {
+    this.props.fetchEvent({ id: this.props.match.params.eventId });
+  }
 
   handleSubmit = (data) => {
     // TODO: remove when form is updated to handle datetime's
-    const eventData = _.assign({}, data, {
-      start_date: new Date(`${data.start_date}T${data.starttime}`).toISOString(),
-      end_date: new Date(`${data.end_date}T${data.endtime}`).toISOString(),
-    });
-    this.props.createEvent(eventData);
+    // const eventData = _.assign({}, data, {
+    //   start_date: new Date(`${data.start_date}T${data.starttime}`).toISOString(),
+    //   end_date: new Date(`${data.end_date}T${data.endtime}`).toISOString(),
+    // });
+    const updatedData = this.props.event.reduce((result, value, key) => {
+      if (data[key] === value) {
+        return result;
+      }
+      result[key] = data[key];
+      return result;
+    }, {});
+    this.props.updateEvent({ id: this.props.event.get('id'), ...updatedData });
   }
 
   renderForm() {
     return (
       <ControlledForm
-        actionTitle="Create event"
-        onSubmit={this.handleSubmit}
+        actionTitle="Edit event"
+        fields={EDIT_EVENT_FIELDS}
         errors={this.props.eventError}
-        fields={CREATE_EVENT_FIELDS}
+        values={this.props.event}
+        onSubmit={this.handleSubmit}
       />
     );
   }
 
   render() {
+    // TODO: need to redirect if not authorized to view page
     return (
-      <div className="create-event-page">
+      <div className="edit-event-page">
         <Container>
           <Row>
             <Col sm={12}>
-              <h2>Create an event</h2>
+              <h2>Edit {this.props.event.get('name')}</h2>
             </Col>
           </Row>
           <Row>
@@ -102,15 +115,17 @@ class CreateEventPage extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, props) => ({
+  event: getEvent(state, props),
   eventError: getEventErrors(state),
 });
 
 const mapDispatchToProps = {
-  createEvent,
+  updateEvent,
+  fetchEvent,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 
-export default connector(CreateEventPage);
+export default connector(EditEventPage);

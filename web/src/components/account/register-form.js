@@ -85,7 +85,7 @@ class RegisterForm extends Component {
             <Label for="confirmPassword" sm={3}>Confirm password</Label>
             <Col sm={9}>
               <Input
-                type="confirmPassword"
+                type="password"
                 id="confirmPassword"
                 value={this.getFieldValue('confirmPassword')}
                 onChange={this.handleChange('confirmPassword')}

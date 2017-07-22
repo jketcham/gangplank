@@ -36,7 +36,7 @@ class PeoplePage extends Component {
           </Row>
           <Row>
             <Col>
-              {this.props.people.map(this.renderPerson)}
+              {this.props.people.map(this.renderPerson).toArray()}
             </Col>
           </Row>
         </Container>

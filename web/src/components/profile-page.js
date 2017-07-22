@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import { Container, Row, Col } from 'reactstrap';
 
 import { getPerson } from '../store/users/selectors';
 import { fetchUser } from '../store/users/actions';
@@ -23,11 +24,31 @@ class ProfilePage extends Component {
     this.props.fetchUser({ id: this.props.match.params.userId });
   }
 
+  renderHeader() {
+    return (
+      <header className="profile-page__header">
+        <Row>
+          <Col sm={6}>
+            <small>Name</small>
+            <h3>{this.props.profile.get('name')}</h3>
+          </Col>
+          <Col sm={6}>
+            <small>Bio</small>
+            <p>{this.props.profile.get('bio')}</p>
+            <small>Website</small>
+            <p>{this.props.profile.get('website')}</p>
+          </Col>
+        </Row>
+      </header>
+    );
+  }
+
   render() {
     return (
-      <div>
-        profile page
-        <h3>{this.props.profile.get('name')}</h3>
+      <div className="profile-page">
+        <Container>
+          {this.renderHeader()}
+        </Container>
       </div>
     );
   }

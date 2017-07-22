@@ -2,10 +2,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { getAccount } from '../store/account/selectors';
 import { getEvent, getEventLoading } from '../store/events/selectors';
 import { fetchEvent } from '../store/events/actions';
 
@@ -34,6 +35,7 @@ EventInfo.propTypes = {
 
 class EventPage extends Component {
   static propTypes = {
+    account: ImmutablePropTypes.map.isRequired,
     match: PropTypes.object.isRequired,
     event: ImmutablePropTypes.map.isRequired,
     fetchEvent: PropTypes.func.isRequired,
@@ -44,13 +46,39 @@ class EventPage extends Component {
     this.props.fetchEvent({ id: this.props.match.params.eventId });
   }
 
+  isOwner() {
+    if (!this.props.event) return false;
+    return !!this.props.event.get('owners').find(owner =>
+      owner.get('id') === this.props.account.get('id'),
+    );
+  }
+
   renderContent() {
     if (this.props.isLoading || !this.props.event) {
       return <div className="text-center">Loading...</div>;
     }
 
     return (
-      <EventInfo event={this.props.event} />
+      <div>
+        {this.renderIsOwner()}
+        <EventInfo event={this.props.event} />
+      </div>
+    );
+  }
+
+  renderIsOwner() {
+    if (!this.isOwner()) {
+      return null;
+    }
+    return (
+      <div>
+        <Link to={`/events/${this.props.event.get('id')}/edit`}>
+          <Button>
+            Edit event
+          </Button>
+        </Link>
+        You are an owner of this event.
+      </div>
     );
   }
 
@@ -70,6 +98,7 @@ class EventPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
+  account: getAccount(state),
   isLoading: getEventLoading(state, props),
   event: getEvent(state, props),
 });
