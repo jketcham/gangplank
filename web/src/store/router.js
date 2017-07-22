@@ -2,9 +2,9 @@ import Immutable from 'immutable';
 import { routerReducer } from 'react-router-redux';
 
 
-const routing = (state, action) => (
+const router = (state, action) => (
   Immutable.fromJS(routerReducer(state, action))
 );
 
 
-export default routing;
+export default router;
