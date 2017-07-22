@@ -3,7 +3,7 @@ from datetime import datetime
 from mongoengine import (
     DateTimeField,
     Document,
-    EmbeddedDocumentField,
+    EmbeddedDocumentListField,
     StringField,
 )
 
@@ -17,4 +17,7 @@ class Event(Document):
     description = StringField(max_length=1000)
     end_date = DateTimeField()
     created_date = DateTimeField(defautl=datetime.now)
-    creator = EmbeddedDocumentField(EmbeddedUser)
+    owners = EmbeddedDocumentListField(EmbeddedUser)
+
+    def is_owner(self, user_id):
+        return any(user['id'] == user_id for user in self.owners)

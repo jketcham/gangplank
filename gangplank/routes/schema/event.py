@@ -12,11 +12,12 @@ class EventSchema(Schema):
     date_created = fields.DateTime()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
-    creator = fields.Nested(EmbeddedUserSchema())
+    owners = fields.List(fields.Nested(EmbeddedUserSchema()))
 
 
 class CreateEventSchema(EventSchema):
     name = fields.String(required=True)
+    description = fields.String(required=True)
     start_date = fields.DateTime(require=True)
 
 

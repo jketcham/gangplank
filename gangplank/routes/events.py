@@ -1,10 +1,12 @@
 import json
 
 import falcon
+from mongoengine.errors import ValidationError
+
 from gangplank.models import Event
 from graceful.authorization import authentication_required
 
-from .schema.event import EventSchema, CreateEventSchema
+from .schema.event import EventSchema, CreateEventSchema, UpdateEventSchema
 
 
 class EventResource(object):
@@ -21,9 +23,28 @@ class EventResource(object):
 
     # TODO: implement updating event
     @authentication_required
-    def on_patch(self, req, resp):
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'ok': True})
+    def on_patch(self, req, resp, event_id):
+        event = Event.objects(id=event_id).first()
+
+        if not event:
+            raise falcon.HTTPNotFound()
+
+        if not event.is_owner(req.context['user'].id):
+            raise falcon.HTTPForbidden()
+
+        update_schema = UpdateEventSchema()
+        result, error = update_schema.dump(json.load(req.bounded_stream))
+        if error:
+            raise falcon.HTTPBadRequest('Missing data', error)
+
+        for key, value in result.items():
+            setattr(event, key, value)
+        event.save()
+
+        event_schema = EventSchema()
+        event_result = event_schema.dump(event)
+
+        resp.body = json.dumps(event_result.data)
 
 
 class EventsResource(object):
@@ -38,9 +59,9 @@ class EventsResource(object):
     @authentication_required
     def on_post(self, req, resp):
         create_schema = CreateEventSchema()
-        result, error = create_schema.load(json.load(req.bounded_stream))
-        if error:
-            raise falcon.HTTPBadRequest('Missing data', error)
+        data, errors = create_schema.load(json.load(req.bounded_stream))
+        if errors:
+            raise falcon.HTTPBadRequest('Missing data', errors)
 
         context_user = {
             'id': req.context['user']['id'],
@@ -48,11 +69,16 @@ class EventsResource(object):
         }
 
         event = Event(
-            name=result['name'],
-            start_date=result['start_date'],
-            description=result['description'],
-            creator=context_user,
-        ).save()
+            owners=[context_user],
+        )
+
+        for key, value in data.items():
+            setattr(event, key, value)
+
+        try:
+            event.save()
+        except ValidationError as err:
+            raise falcon.HTTPBadRequest('Invalid data', err.to_dict())
 
         event_schema = EventSchema()
         event_result = event_schema.dump(event)

@@ -4,6 +4,7 @@ import falcon
 import bcrypt
 
 from mongoengine import NotUniqueError
+from graceful.authorization import authentication_required
 
 from gangplank.models import User
 from gangplank.session import auth_storage
@@ -64,7 +65,11 @@ class UserResource(object):
 
         resp.body = json.dumps(result.data)
 
+    @authentication_required
     def on_put(self, req, resp, user_id):
+        if req.context['user'].id != user_id:
+            raise falcon.HTTPForbidden()
+
         user = User.objects(id=user_id).first()
 
         if user is None:
