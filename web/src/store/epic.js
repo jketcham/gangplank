@@ -10,6 +10,7 @@ const rootEpic = combineEpics(
   eventEpics.fetchEventEpic,
   eventEpics.fetchEventsEpic,
   eventEpics.createEventEpic,
+  eventEpics.updateEventEpic,
   userEpics.fetchUsersEpic,
   userEpics.fetchUserEpic,
   accountEpics.loginEpic,

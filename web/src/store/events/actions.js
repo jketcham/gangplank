@@ -1,6 +1,5 @@
 import { createAction } from 'redux-actions';
 
-// TODO: add error action creators
 
 /** fetch event */
 
@@ -33,6 +32,17 @@ const createEvent = createAction(CREATE_EVENT_PENDING);
 const createEventComplete = createAction(CREATE_EVENT_COMPLETE);
 const createEventError = createAction(CREATE_EVENT_ERROR);
 
+/** update event */
+
+const UPDATE_EVENT_PENDING = 'UPDATE_EVENT_PENDING';
+const UPDATE_EVENT_COMPLETE = 'UPDATE_EVENT_COMPLETE';
+const UPDATE_EVENT_ERROR = 'UPDATE_EVENT_ERROR';
+
+const updateEvent = createAction(UPDATE_EVENT_PENDING);
+const updateEventComplete = createAction(UPDATE_EVENT_COMPLETE);
+const updateEventError = createAction(UPDATE_EVENT_ERROR);
+
+
 export {
   CREATE_EVENT_COMPLETE,
   CREATE_EVENT_ERROR,
@@ -43,6 +53,9 @@ export {
   FETCH_EVENT_COMPLETE,
   FETCH_EVENT_ERROR,
   FETCH_EVENT_PENDING,
+  UPDATE_EVENT_COMPLETE,
+  UPDATE_EVENT_ERROR,
+  UPDATE_EVENT_PENDING,
   createEvent,
   createEventComplete,
   createEventError,
@@ -52,4 +65,7 @@ export {
   fetchEvents,
   fetchEventsComplete,
   fetchEventsError,
+  updateEvent,
+  updateEventComplete,
+  updateEventError,
 };

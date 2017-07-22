@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { ajax } from '../../api';
+import { ajax, handleError } from '../../api';
 import {
   LOGIN_PENDING,
   LOGOUT_PENDING,
@@ -25,9 +25,7 @@ const loginEpic = action$ =>
         window.localStorage.setItem('jwt_token', response.token);
         window.localStorage.setItem('user', JSON.stringify(response.user));
         return loginComplete(response);
-      }),
-    ).catch(error =>
-      Observable.of(loginError(error)),
+      }).catch(handleError(loginError)),
     );
 
 const registerEpic = action$ =>
@@ -42,9 +40,7 @@ const registerEpic = action$ =>
         window.localStorage.setItem('jwt_token', response.token);
         window.localStorage.setItem('user', JSON.stringify(response.user));
         return registerComplete(response);
-      }),
-    ).catch(error =>
-      Observable.of(registerError(error)),
+      }).catch(handleError(registerError)),
     );
 
 const logoutEpic = action$ =>
