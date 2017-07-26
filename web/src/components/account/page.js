@@ -29,6 +29,17 @@ class AccountPage extends Component {
     return this.props.location.pathname;
   }
 
+  /**
+   * If the `location` prop's state is not undefined, the user was redirected here
+   * and we can send them back from whence they came.
+   */
+  getReferrer() {
+    if (this.props.location.state) {
+      return this.props.location.state.from;
+    }
+    return { pathname: '/' };
+  }
+
   handleSubmit = (data) => {
     if (this.getPathname() === '/login') {
       return this.props.login(data);
@@ -89,7 +100,7 @@ class AccountPage extends Component {
 
   render() {
     if (!this.props.account.isEmpty()) {
-      return <Redirect to="/" />;
+      return <Redirect to={this.getReferrer()} />;
     }
 
     return (

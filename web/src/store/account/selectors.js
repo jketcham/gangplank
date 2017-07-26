@@ -1,5 +1,8 @@
 const getAccount = state =>
   state.get('account');
 
+const isAuthenticated = state =>
+  !getAccount(state).isEmpty();
 
-export { getAccount };
+
+export { getAccount, isAuthenticated };
