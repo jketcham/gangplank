@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { combineEpics } from 'redux-observable';
 
 import { ajax, handleError } from '../../api';
 import {
@@ -12,6 +13,11 @@ import {
   registerError,
 } from './actions';
 
+// TODO: handle errors from browsers that don't have localStorage
+const setStorage = (response) => {
+  window.localStorage.setItem('jwt_token', response.token);
+  window.localStorage.setItem('user', JSON.stringify(response.user));
+};
 
 const loginEpic = action$ =>
   action$.ofType(LOGIN_PENDING)
@@ -21,11 +27,10 @@ const loginEpic = action$ =>
         method: 'POST',
         responseType: 'json',
         body: action.payload,
-      }).map(({ response }) => {
-        window.localStorage.setItem('jwt_token', response.token);
-        window.localStorage.setItem('user', JSON.stringify(response.user));
-        return loginComplete(response);
-      }).catch(handleError(loginError)),
+      })
+      .do(({ response }) => setStorage(response))
+      .map(({ response }) => loginComplete(response))
+      .catch(handleError(loginError)),
     );
 
 const registerEpic = action$ =>
@@ -36,20 +41,25 @@ const registerEpic = action$ =>
         method: 'POST',
         responseType: 'json',
         body: action.payload,
-      }).map(({ response }) => {
-        window.localStorage.setItem('jwt_token', response.token);
-        window.localStorage.setItem('user', JSON.stringify(response.user));
-        return registerComplete(response);
-      }).catch(handleError(registerError)),
+      })
+      .do(({ response }) => setStorage(response))
+      .map(({ response }) => registerComplete(response))
+      .catch(handleError(registerError)),
     );
 
-const logoutEpic = action$ =>
+const logoutStorage = (action$, store, { push }) =>
   action$.ofType(LOGOUT_PENDING)
     .mergeMap((action) => {
       window.localStorage.removeItem('jwt_token');
       window.localStorage.removeItem('user');
       return Observable.of(logoutComplete());
     });
+
+const logoutRedirect = (action$, store, { push }) =>
+  action$.ofType(LOGOUT_PENDING)
+    .mapTo(push('/'));
+
+const logoutEpic = combineEpics(logoutStorage, logoutRedirect);
 
 
 export { loginEpic, registerEpic, logoutEpic };

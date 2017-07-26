@@ -60,7 +60,7 @@ const handleError = handler => (error) => {
   // TODO: redirect to login page on session expire?
   // TODO: need to handle using a "refresh token" or some simliar method
   // to get a new access token
-  if (error.xhr.response.description === 'Signature has expired') {
+  if (_.get(error, 'xhr.response.description') === 'Signature has expired') {
     return Observable.of({ type: 'LOGOUT_COMPLETE', payload: error })
       .concat(Observable.of(handler({ errors: error.xhr.response })));
   }
