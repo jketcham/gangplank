@@ -1,0 +1,9 @@
+from node:6
+RUN npm install -g gulp-cli
+
+WORKDIR /usr/src/app/web
+
+EXPOSE 8181
+
+CMD ["npm", "install"]
+CMD ["gulp", "watch"]
