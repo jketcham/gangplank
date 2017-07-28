@@ -21,7 +21,6 @@ class EventResource(object):
 
         resp.body = json.dumps(result.data)
 
-    # TODO: implement updating event
     @authentication_required
     def on_patch(self, req, resp, event_id):
         event = Event.objects(id=event_id).first()
@@ -33,7 +32,7 @@ class EventResource(object):
             raise falcon.HTTPForbidden()
 
         update_schema = UpdateEventSchema()
-        result, error = update_schema.dump(json.load(req.bounded_stream))
+        result, error = update_schema.load(json.load(req.bounded_stream))
         if error:
             raise falcon.HTTPBadRequest('Missing data', error)
 
