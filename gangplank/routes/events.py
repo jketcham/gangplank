@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import falcon
 from mongoengine.errors import ValidationError
@@ -48,7 +49,7 @@ class EventResource(object):
 
 class EventsResource(object):
     def on_get(self, req, resp):
-        events = Event.objects
+        events = Event.objects(start__gte=datetime.now()).order_by('start')
 
         event_schema = EventSchema(many=True)
         result = event_schema.dump(events)
