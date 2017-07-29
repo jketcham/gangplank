@@ -1,7 +1,10 @@
+import _ from 'lodash';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
@@ -10,7 +13,7 @@ import { getEvent, getEventErrors } from '../store/events/selectors';
 import ControlledForm from './controlled-form';
 
 
-const EDIT_EVENT_FIELDS = new Immutable.List([
+const EDIT_EVENT_FIELDS = new Immutable.OrderedSet([
   new Immutable.Map({
     name: 'name',
     title: 'Name',
@@ -22,29 +25,14 @@ const EDIT_EVENT_FIELDS = new Immutable.List([
     type: 'textarea',
   }),
   new Immutable.Map({
-    name: 'start_date',
-    title: 'Start date',
-    type: 'date',
+    name: 'start',
+    title: 'Start',
+    type: 'datetime-local',
   }),
   new Immutable.Map({
-    name: 'starttime',
-    title: 'Start time',
-    type: 'time',
-  }),
-  new Immutable.Map({
-    name: 'end_date',
-    title: 'End date',
-    type: 'date',
-  }),
-  new Immutable.Map({
-    name: 'endtime',
-    title: 'End time',
-    type: 'time',
-  }),
-  new Immutable.Map({
-    name: 'promote',
-    title: 'Promote event?',
-    type: 'checkbox',
+    name: 'end',
+    title: 'End',
+    type: 'datetime-local',
   }),
 ]);
 
@@ -66,12 +54,16 @@ class EditEventPage extends Component {
     this.props.fetchEvent({ id: this.props.match.params.eventId });
   }
 
+  // the HTML datetime-local input we use doesn't allow non-local datetime
+  // strings, so this method removes the timezone info
+  cleanEventValues = () => (
+    this.props.event.withMutations(event => event
+      .update('start', '', date => moment(date).format().slice(0, -6))
+      .update('end', '', date => moment(date).format().slice(0, -6)),
+    )
+  )
+
   handleSubmit = (data) => {
-    // TODO: remove when form is updated to handle datetime's
-    // const eventData = _.assign({}, data, {
-    //   start_date: new Date(`${data.start_date}T${data.starttime}`).toISOString(),
-    //   end_date: new Date(`${data.end_date}T${data.endtime}`).toISOString(),
-    // });
     const updatedData = this.props.event.reduce((result, value, key) => {
       if (data[key] === value) {
         return result;
@@ -79,7 +71,12 @@ class EditEventPage extends Component {
       result[key] = data[key];
       return result;
     }, {});
-    this.props.updateEvent({ id: this.props.event.get('id'), ...updatedData });
+
+    const start = moment(data.start).utc().format();
+    const end = moment(data.end).utc().format();
+    const eventData = _.assign({}, updatedData, { start, end });
+
+    this.props.updateEvent({ id: this.props.event.get('id'), ...eventData });
   }
 
   renderForm() {
@@ -88,7 +85,7 @@ class EditEventPage extends Component {
         actionTitle="Edit event"
         fields={EDIT_EVENT_FIELDS}
         errors={this.props.eventError}
-        values={this.props.event}
+        values={this.cleanEventValues()}
         onSubmit={this.handleSubmit}
       />
     );
@@ -99,6 +96,13 @@ class EditEventPage extends Component {
     return (
       <div className="edit-event-page">
         <Container>
+          <Row>
+            <Col sm={12}>
+              <Link to={`/events/${this.props.event.get('id')}`}>
+                Back to event page
+              </Link>
+            </Col>
+          </Row>
           <Row>
             <Col sm={12}>
               <h2>Edit {this.props.event.get('name')}</h2>

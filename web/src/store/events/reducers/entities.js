@@ -11,7 +11,7 @@ import {
 } from '../actions';
 
 
-const INITIAL_STATE = new Immutable.Map();
+const INITIAL_STATE = new Immutable.OrderedMap();
 const EVENT_INITIAL_STATE = new Immutable.Map({
   loading: false,
   error: new Immutable.Map(),

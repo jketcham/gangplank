@@ -19,7 +19,9 @@ const EventInfo = ({ event }) => (
         {event.getIn(['creator', 'name'])}
       </Link>
       <ul className="list-inline">
-        <li>Starts: {moment(event.get('start_date')).format('lll')}</li>
+        <li>Starts: {moment(event.get('start')).format('lll')}</li>
+        <li>Ends: {moment(event.get('end')).format('lll')}</li>
+        <li>Created: {moment(event.get('date_created')).format('lll')}</li>
       </ul>
     </div>
     <div className="event-info__description">
