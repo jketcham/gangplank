@@ -16,6 +16,10 @@ from mongoengine import (
 
 
 class User(Document):
+    meta = {
+        'collection': 'users',
+    }
+
     email = EmailField(required=True, unique=True)
     name = StringField(required=True, max_length=100)
     bio = StringField(max_length=300)

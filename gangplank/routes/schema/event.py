@@ -10,15 +10,19 @@ class EventSchema(Schema):
     location = fields.String()
 
     date_created = fields.DateTime()
-    start_date = fields.DateTime()
-    end_date = fields.DateTime()
+    start = fields.DateTime()
+    end = fields.DateTime()
+
+    request_promotion = fields.Bool()
     owners = fields.List(fields.Nested(EmbeddedUserSchema()))
 
 
 class CreateEventSchema(EventSchema):
     name = fields.String(required=True)
     description = fields.String(required=True)
-    start_date = fields.DateTime(require=True)
+    start = fields.DateTime()
+    end = fields.DateTime()
+    request_promotion = fields.Bool()
 
 
 class UpdateEventSchema(EventSchema):
@@ -26,5 +30,6 @@ class UpdateEventSchema(EventSchema):
     description = fields.String()
     location = fields.String()
 
-    start_date = fields.DateTime()
-    end_date = fields.DateTime()
+    start = fields.DateTime()
+    end = fields.DateTime()
+    request_promotion = fields.Bool()

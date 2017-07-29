@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from mongoengine import (
+    BooleanField,
     DateTimeField,
     Document,
     EmbeddedDocumentListField,
@@ -11,12 +12,26 @@ from .user import EmbeddedUser
 
 
 class Event(Document):
+    meta = {
+        'collection': 'events',
+        'indexes': [
+            {
+                'fields': ['start'],
+                'unique': True,
+            },
+        ],
+    }
+
     name = StringField(required=True)
-    start_date = DateTimeField(required=True)
     location = StringField()
     description = StringField(max_length=1000)
-    end_date = DateTimeField()
-    created_date = DateTimeField(defautl=datetime.now)
+
+    start = DateTimeField(required=True)
+    end = DateTimeField(required=True)
+
+    request_promotion = BooleanField()
+
+    date_created = DateTimeField(defautl=datetime.now)
     owners = EmbeddedDocumentListField(EmbeddedUser)
 
     def is_owner(self, user_id):
