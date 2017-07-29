@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV ENV=docker
+ENV ENV=prod
 
 EXPOSE 8000
 

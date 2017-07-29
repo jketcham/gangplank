@@ -10,6 +10,8 @@ RUN apk add --no-cache gcc libffi libffi-dev libc-dev
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV ENV=dev
+
 EXPOSE 8000
 
 CMD ["/usr/local/bin/gunicorn", "-b", "0.0.0.0:8000", "gangplank.app:get_app()"]

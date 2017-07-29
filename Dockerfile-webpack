@@ -1,9 +1,9 @@
-from node:6
-RUN npm install -g gulp-cli
+from node:6.11.1-alpine
 
-WORKDIR /usr/src/app/web
+WORKDIR /usr/src/app
+
+RUN yarn global add gulp && yarn install
 
 EXPOSE 8181
 
-CMD ["npm", "install"]
 CMD ["gulp", "watch"]
