@@ -10,9 +10,7 @@ RUN apk add --no-cache gcc libffi libffi-dev libc-dev
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
-ENV ENV=prod
+ENV ENV=dev
 
 EXPOSE 8000
 

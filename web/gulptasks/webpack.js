@@ -46,7 +46,7 @@ gulp.task('webpack:dev', (callback) => {
 
 // Hot loading server
 gulp.task('webpack-dev-server', (callback) => {
-  const host = 'localhost';
+  const host = '0.0.0.0';
   const port = 8181;
   const compiler = webpack(WEBPACK_CONFIGS['webpack.dev.config']);
 
