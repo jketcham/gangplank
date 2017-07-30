@@ -5,7 +5,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo
-      - redis
       - nginx
     environment:
       - VIRTUAL_HOST=chandler.gangplank.space

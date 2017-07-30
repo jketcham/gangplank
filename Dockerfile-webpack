@@ -1,0 +1,9 @@
+from node:6.11.1-alpine
+
+WORKDIR /usr/src/app
+
+RUN yarn global add gulp && yarn install
+
+EXPOSE 8181
+
+CMD ["gulp", "watch"]
