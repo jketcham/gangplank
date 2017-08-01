@@ -18,7 +18,7 @@ module.exports = Object.assign({}, base, {
 
   output: {
     path: path.join(ROOT_DIR, 'dist'),
-    publicPath: 'dist/',
+    publicPath: 'http://localhost:8181/dist/',
     filename: '[name].bundle.js',
     chunkFilename: '[name].js',
   },
