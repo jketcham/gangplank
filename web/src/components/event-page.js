@@ -15,11 +15,13 @@ const EventInfo = ({ event }) => (
   <section className="event-info">
     <div className="event-info__header">
       <h4>{event.get('name')}</h4>
-      <Link to={`/people/${event.getIn(['creator', 'id'])}`}>
-        {event.getIn(['creator', 'name'])}
+      <Link to={`/people/${event.getIn(['owner', 'id'])}`}>
+        {event.getIn(['owner', 'name'])}
       </Link>
       <ul className="list-inline">
-        <li>Starts: {moment(event.get('start_date')).format('lll')}</li>
+        <li>Starts: {moment(event.get('start')).format('lll')}</li>
+        <li>Ends: {moment(event.get('end')).format('lll')}</li>
+        <li>Created: {moment(event.get('date_created')).format('lll')}</li>
       </ul>
     </div>
     <div className="event-info__description">
@@ -48,9 +50,7 @@ class EventPage extends Component {
 
   isOwner() {
     if (!this.props.event) return false;
-    return !!this.props.event.get('owners').find(owner =>
-      owner.get('id') === this.props.account.get('id'),
-    );
+    return this.props.event.getIn(['owner', 'id']) === this.props.account.get('id');
   }
 
   renderContent() {
@@ -70,6 +70,7 @@ class EventPage extends Component {
     if (!this.isOwner()) {
       return null;
     }
+
     return (
       <div>
         <Link to={`/events/${this.props.event.get('id')}/edit`}>

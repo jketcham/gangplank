@@ -2,8 +2,6 @@ const path = require('path');
 
 const ROOT_DIR = path.normalize(path.join(__dirname, '..'));
 
-console.log(path.join(ROOT_DIR, 'src'));
-
 
 module.exports = {
   entry: {

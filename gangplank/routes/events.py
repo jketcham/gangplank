@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import falcon
 from mongoengine.errors import ValidationError
@@ -45,10 +46,23 @@ class EventResource(object):
 
         resp.body = json.dumps(event_result.data)
 
+    @authentication_required
+    def on_delete(self, req, resp, event_id):
+        event = Event.objects(id=event_id).first()
+
+        if not event:
+            raise falcon.HTTPNotFound()
+
+        if not event.is_owner(req.context['user'].id):
+            raise falcon.HTTPForbidden()
+
+        event.delete()
+        resp.status = falcon.HTTP_204
+
 
 class EventsResource(object):
     def on_get(self, req, resp):
-        events = Event.objects
+        events = Event.objects(start__gte=datetime.now()).order_by('start')
 
         event_schema = EventSchema(many=True)
         result = event_schema.dump(events)
@@ -68,7 +82,7 @@ class EventsResource(object):
         }
 
         event = Event(
-            owners=[context_user],
+            owner=context_user,
         )
 
         for key, value in data.items():

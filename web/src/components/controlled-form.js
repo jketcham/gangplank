@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import _ from 'lodash';
 import { Map, List } from 'immutable';
 import {
-  Col,
   Button,
+  Col,
   Form,
   FormFeedback,
   FormGroup,
@@ -15,17 +16,20 @@ import {
 
 class ControlledForm extends Component {
   static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    errors: ImmutablePropTypes.map.isRequired,
-    fields: ImmutablePropTypes.list.isRequired,
     actionTitle: PropTypes.string.isRequired,
-    values: ImmutablePropTypes.map,
+    errors: ImmutablePropTypes.map.isRequired,
+    fields: ImmutablePropTypes.orderedSet.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+
+    onChange: PropTypes.func,
     row: PropTypes.bool,
+    values: ImmutablePropTypes.map,
   };
 
   static defaultProps = {
-    values: null,
+    onChange: _.noop,
     row: false,
+    values: null,
   };
 
   state = {
@@ -45,7 +49,7 @@ class ControlledForm extends Component {
   }
 
   getFieldValue(field) {
-    return this.state.formValues.getIn([field, 'value']);
+    return this.state.formValues.getIn([field, 'value'], '');
   }
 
   getFieldError(fieldName) {
@@ -60,14 +64,16 @@ class ControlledForm extends Component {
   }
 
   handleChange = field => (event) => {
-    const value = event.target.value;
-    this.setState(({ formValues }) => ({
-      formValues: formValues.updateIn(
-        [field, 'value'],
-        '',
-        fv => value,
-      ),
-    }));
+    const value = _.get(event, 'target.value', event);
+    const formValues = new Map(this.state.formValues).updateIn(
+      [field, 'value'],
+      '',
+      fv => value,
+    );
+
+    this.setState({ formValues });
+
+    this.props.onChange(formValues);
   }
 
   handleSubmit = (event) => {
@@ -117,6 +123,36 @@ class ControlledForm extends Component {
     return errors.map(error => <FormFeedback key={error}><em>{error}</em></FormFeedback>);
   }
 
+  renderInput(field, errors) {
+    if (field.get('type') === 'select') {
+      return (
+        <Input
+          type={field.get('type')}
+          id={`field-${field.get('name')}`}
+          state={errors ? 'danger' : undefined}
+          required={field.get('required') || false}
+          value={this.getFieldValue(field.get('name'))}
+          onChange={this.handleChange(field.get('name'))}
+        >
+          {field.get('options').map(option => (
+            <option value={option} key={option}>{option}</option>
+          ))}
+        </Input>
+      );
+    }
+
+    return (
+      <Input
+        type={field.get('type')}
+        id={`field-${field.get('name')}`}
+        state={errors ? 'danger' : undefined}
+        required={field.get('required') || false}
+        value={this.getFieldValue(field.get('name'))}
+        onChange={this.handleChange(field.get('name'))}
+      />
+    );
+  }
+
   renderGroup(field) {
     const errors = this.getFieldError(field.get('name'));
 
@@ -125,17 +161,11 @@ class ControlledForm extends Component {
         row={this.props.row}
         color={errors ? 'danger' : undefined}
         key={field.get('name')}
+        check={field.get('type') === 'checkbox'}
       >
         <Label for={`field-${field.get('name')}`} sm={3}>{field.get('title')}</Label>
-        <Col sm={9}>
-          <Input
-            type={field.get('type')}
-            id={`field-${field.get('name')}`}
-            state={errors ? 'danger' : undefined}
-            required={field.get('required') || false}
-            value={this.getFieldValue(field.get('name'))}
-            onChange={this.handleChange(field.get('name'))}
-          />
+        <Col sm={12}>
+          {this.renderInput(field, errors)}
           {this.renderFeedback(errors)}
         </Col>
       </FormGroup>
@@ -158,7 +188,7 @@ class ControlledForm extends Component {
         <Form onSubmit={this.handleSubmit}>
           {this.renderGroups()}
           <FormGroup row={this.props.row}>
-            <Col sm={{ size: 9, offset: 3 }}>
+            <Col>
               {this.renderSubmitButton()}
             </Col>
           </FormGroup>

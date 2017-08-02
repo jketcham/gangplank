@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from './store';
 
 import ProtectedRoute from './components/protected-route';
+
 import App from './components/app';
 import AccountPage from './components/account/page';
 import EventPage from './components/event-page';
@@ -16,7 +17,7 @@ import HomePage from './components/home';
 import PeoplePage from './components/people-page';
 import ProfilePage from './components/profile-page';
 
-// TODO: lazy-load routes: /events/create
+// TODO: code-split routes: /events/create
 
 const router = (
   <Provider store={store}>
@@ -29,8 +30,10 @@ const router = (
           <Route exact path="/events/:eventId" component={EventPage} />
           <Route exact path="/events/:eventId/edit" component={EditEventPage} />
         </Switch>
-        <ProtectedRoute path="/people/:userId" component={ProfilePage} />
-        <Route exact path="/people" component={PeoplePage} />
+        <Switch>
+          <ProtectedRoute exact path="/people" component={PeoplePage} />
+          <ProtectedRoute path="/people/:userId" component={ProfilePage} />
+        </Switch>
         <Route exact path="/login" component={AccountPage} />
         <Route exact path="/register" component={AccountPage} />
       </App>

@@ -1,16 +1,20 @@
+import _ from 'lodash';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Link, Redirect } from 'react-router-dom';
+import { Button, Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import { fetchEvent, updateEvent } from '../store/events/actions';
+import { deleteEvent, fetchEvent, updateEvent } from '../store/events/actions';
 import { getEvent, getEventErrors } from '../store/events/selectors';
+import { getAccount } from '../store/account/selectors';
 import ControlledForm from './controlled-form';
 
 
-const EDIT_EVENT_FIELDS = new Immutable.List([
+const EDIT_EVENT_FIELDS = new Immutable.OrderedSet([
   new Immutable.Map({
     name: 'name',
     title: 'Name',
@@ -22,56 +26,52 @@ const EDIT_EVENT_FIELDS = new Immutable.List([
     type: 'textarea',
   }),
   new Immutable.Map({
-    name: 'start_date',
-    title: 'Start date',
-    type: 'date',
+    name: 'start',
+    title: 'Start',
+    type: 'datetime-local',
   }),
   new Immutable.Map({
-    name: 'starttime',
-    title: 'Start time',
-    type: 'time',
-  }),
-  new Immutable.Map({
-    name: 'end_date',
-    title: 'End date',
-    type: 'date',
-  }),
-  new Immutable.Map({
-    name: 'endtime',
-    title: 'End time',
-    type: 'time',
-  }),
-  new Immutable.Map({
-    name: 'promote',
-    title: 'Promote event?',
-    type: 'checkbox',
+    name: 'end',
+    title: 'End',
+    type: 'datetime-local',
   }),
 ]);
 
 
 class EditEventPage extends Component {
   static propTypes = {
-    updateEvent: PropTypes.func.isRequired,
-    fetchEvent: PropTypes.func.isRequired,
+    deleteEvent: PropTypes.func.isRequired,
+    account: ImmutablePropTypes.map.isRequired,
     event: ImmutablePropTypes.map.isRequired,
     eventError: ImmutablePropTypes.map.isRequired,
+    fetchEvent: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
+    updateEvent: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    event: new Immutable.Map(),
+    event: null,
   };
 
   componentWillMount() {
     this.props.fetchEvent({ id: this.props.match.params.eventId });
   }
 
+  deleteEvent = () => {
+    // TODO: add confirm prompt
+    this.props.deleteEvent({ id: this.props.event.get('id') });
+  }
+
+  // the HTML datetime-local input we use doesn't allow non-local datetime
+  // strings, so this method removes the timezone info
+  cleanEventValues = () => (
+    this.props.event.withMutations(event => event
+      .update('start', '', date => moment(date).format().slice(0, -6))
+      .update('end', '', date => moment(date).format().slice(0, -6)),
+    )
+  )
+
   handleSubmit = (data) => {
-    // TODO: remove when form is updated to handle datetime's
-    // const eventData = _.assign({}, data, {
-    //   start_date: new Date(`${data.start_date}T${data.starttime}`).toISOString(),
-    //   end_date: new Date(`${data.end_date}T${data.endtime}`).toISOString(),
-    // });
     const updatedData = this.props.event.reduce((result, value, key) => {
       if (data[key] === value) {
         return result;
@@ -79,7 +79,27 @@ class EditEventPage extends Component {
       result[key] = data[key];
       return result;
     }, {});
-    this.props.updateEvent({ id: this.props.event.get('id'), ...updatedData });
+
+    const start = moment(data.start).utc().format();
+    const end = moment(data.end).utc().format();
+    const eventData = _.assign({}, updatedData, { start, end });
+
+    this.props.updateEvent({ id: this.props.event.get('id'), ...eventData });
+  }
+
+  renderRedirect() {
+    if (this.props.account.get('id') === this.props.event.getIn(['owner', 'id'])) {
+      return null;
+    }
+
+    // TODO: show error message after redirect from forbidden route
+    return (
+      <Redirect
+        to={{
+          pathname: `/events/${this.props.event.get('id')}`,
+        }}
+      />
+    );
   }
 
   renderForm() {
@@ -88,20 +108,36 @@ class EditEventPage extends Component {
         actionTitle="Edit event"
         fields={EDIT_EVENT_FIELDS}
         errors={this.props.eventError}
-        values={this.props.event}
+        values={this.cleanEventValues()}
         onSubmit={this.handleSubmit}
       />
     );
   }
 
   render() {
-    // TODO: need to redirect if not authorized to view page
+    if (!this.props.event) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <div className="edit-event-page">
+        {this.renderRedirect()}
         <Container>
           <Row>
             <Col sm={12}>
+              <Link to={`/events/${this.props.event.get('id')}`}>
+                Back to event page
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={6}>
               <h2>Edit {this.props.event.get('name')}</h2>
+            </Col>
+            <Col sm={6}>
+              <Button onClick={this.deleteEvent}>
+                Delete event
+              </Button>
             </Col>
           </Row>
           <Row>
@@ -116,6 +152,7 @@ class EditEventPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
+  account: getAccount(state),
   event: getEvent(state, props),
   eventError: getEventErrors(state),
 });
@@ -123,6 +160,7 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = {
   updateEvent,
   fetchEvent,
+  deleteEvent,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -52,7 +52,8 @@ gulp.task('webpack-dev-server', (callback) => {
 
   const serverConfig = {
     hot: true,
-    publicPath: `/${WEBPACK_CONFIGS['webpack.dev.config'].output.publicPath}`,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    publicPath: `${WEBPACK_CONFIGS['webpack.dev.config'].output.publicPath}`,
     stats: STATS_OPTIONS,
   };
 

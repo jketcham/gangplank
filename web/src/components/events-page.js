@@ -28,9 +28,14 @@ class EventsPage extends Component {
           <Link to={`/events/${event.get('id')}`}>{event.get('name')}</Link>
         </h6>
         <ul className="list-inline">
-          <li className="list-inline-item">{moment(event.get('start_date')).format('lll')}</li>
+          <li className="list-inline-item">{moment(event.get('start')).format('lll')}</li>
           <li className="list-inline-item">
-            <em>in {moment(event.get('start_date')).toNow(true)}</em>
+            <em>in {moment(event.get('start')).toNow(true)}</em>
+          </li>
+          <li className="list-inline-item">
+            <Link to={`/people/${event.getIn(['owners', 0, 'id'])}`}>
+              {event.getIn(['owners', 0, 'name'])}
+            </Link>
           </li>
         </ul>
       </div>
@@ -56,7 +61,7 @@ class EventsPage extends Component {
               <h1 className="display-3">Events</h1>
             </Col>
             <Col>
-              <Button>
+              <Button className="float-right">
                 <Link to="/events/create">Create event</Link>
               </Button>
             </Col>

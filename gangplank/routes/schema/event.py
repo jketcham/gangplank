@@ -14,7 +14,8 @@ class EventSchema(Schema):
     end = fields.DateTime()
 
     request_promotion = fields.Bool()
-    owners = fields.List(fields.Nested(EmbeddedUserSchema()))
+    owner = fields.Nested(EmbeddedUserSchema())
+    organizers = fields.List(fields.Nested(EmbeddedUserSchema()))
 
 
 class CreateEventSchema(EventSchema):
