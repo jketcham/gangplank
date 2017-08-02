@@ -7,15 +7,17 @@ import * as accountEpics from './account/epics';
 
 // TODO: get object spread operator working here?
 const rootEpic = combineEpics(
+  accountEpics.loginEpic,
+  accountEpics.logoutEpic,
+  accountEpics.registerEpic,
+  eventEpics.createEventEpic,
+  eventEpics.deleteEventEpic,
+  eventEpics.deleteEventNavigateEpic,
   eventEpics.fetchEventEpic,
   eventEpics.fetchEventsEpic,
-  eventEpics.createEventEpic,
   eventEpics.updateEventEpic,
-  userEpics.fetchUsersEpic,
   userEpics.fetchUserEpic,
-  accountEpics.loginEpic,
-  accountEpics.registerEpic,
-  accountEpics.logoutEpic,
+  userEpics.fetchUsersEpic,
 );
 
 

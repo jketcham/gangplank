@@ -42,11 +42,23 @@ const updateEvent = createAction(UPDATE_EVENT_PENDING);
 const updateEventComplete = createAction(UPDATE_EVENT_COMPLETE);
 const updateEventError = createAction(UPDATE_EVENT_ERROR);
 
+/** delete event */
+
+const DELETE_EVENT_PENDING = 'DELETE_EVENT_PENDING';
+const DELETE_EVENT_COMPLETE = 'DELETE_EVENT_COMPLETE';
+const DELETE_EVENT_ERROR = 'DELETE_EVENT_ERROR';
+
+const deleteEvent = createAction(DELETE_EVENT_PENDING);
+const deleteEventComplete = createAction(DELETE_EVENT_COMPLETE);
+const deleteEventError = createAction(DELETE_EVENT_ERROR);
 
 export {
   CREATE_EVENT_COMPLETE,
   CREATE_EVENT_ERROR,
   CREATE_EVENT_PENDING,
+  DELETE_EVENT_COMPLETE,
+  DELETE_EVENT_ERROR,
+  DELETE_EVENT_PENDING,
   FETCH_EVENTS_COMPLETE,
   FETCH_EVENTS_ERROR,
   FETCH_EVENTS_PENDING,
@@ -59,6 +71,9 @@ export {
   createEvent,
   createEventComplete,
   createEventError,
+  deleteEvent,
+  deleteEventComplete,
+  deleteEventError,
   fetchEvent,
   fetchEventComplete,
   fetchEventError,

@@ -2,11 +2,15 @@ import { handleError } from '../../api';
 
 import {
   CREATE_EVENT_PENDING,
+  DELETE_EVENT_PENDING,
+  DELETE_EVENT_COMPLETE,
   FETCH_EVENTS_PENDING,
   FETCH_EVENT_PENDING,
   UPDATE_EVENT_PENDING,
   createEventComplete,
   createEventError,
+  deleteEventComplete,
+  deleteEventError,
   fetchEventComplete,
   fetchEventError,
   fetchEventsComplete,
@@ -60,8 +64,26 @@ const updateEventEpic = (action$, store, { ajax, push }) =>
       ).catch(handleError(updateEventError)),
     );
 
+const deleteEventEpic = (action$, store, { ajax }) =>
+  action$.ofType(DELETE_EVENT_PENDING)
+    .mergeMap(action =>
+      ajax({
+        method: 'DELETE',
+        url: `/api/events/${action.payload.id}`,
+      }).map(
+        ({ response }) => deleteEventComplete({ id: action.payload.id }),
+      ).catch(handleError(deleteEventError)),
+    );
+
+const deleteEventNavigateEpic = (action$, store, { push }) =>
+  action$.ofType(DELETE_EVENT_COMPLETE)
+    .mapTo(push('/events'));
+
+
 export {
   createEventEpic,
+  deleteEventEpic,
+  deleteEventNavigateEpic,
   fetchEventEpic,
   fetchEventsEpic,
   updateEventEpic,
