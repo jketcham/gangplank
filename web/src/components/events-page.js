@@ -61,7 +61,7 @@ class EventsPage extends Component {
               <h1 className="display-3">Events</h1>
             </Col>
             <Col>
-              <Button>
+              <Button className="float-right">
                 <Link to="/events/create">Create event</Link>
               </Button>
             </Col>
