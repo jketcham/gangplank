@@ -5,6 +5,7 @@ from mongoengine import (
     DateTimeField,
     Document,
     EmbeddedDocumentListField,
+    EmbeddedDocumentField,
     StringField,
 )
 
@@ -31,8 +32,9 @@ class Event(Document):
 
     request_promotion = BooleanField()
 
-    date_created = DateTimeField(defautl=datetime.now)
-    owners = EmbeddedDocumentListField(EmbeddedUser)
+    date_created = DateTimeField(default=datetime.now)
+    owner = EmbeddedDocumentField(EmbeddedUser)
+    organizers = EmbeddedDocumentListField(EmbeddedUser)
 
     def is_owner(self, user_id):
-        return any(user['id'] == user_id for user in self.owners)
+        return user_id == self.owner.id
