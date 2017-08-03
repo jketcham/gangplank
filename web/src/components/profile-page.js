@@ -3,7 +3,8 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import { getPerson } from '../store/users/selectors';
 import { fetchUser } from '../store/users/actions';
@@ -39,7 +40,11 @@ class ProfilePage extends Component {
             <p>{this.props.profile.get('website')}</p>
           </Col>
           <Col sm={12}>
-            <a href={"/people/" + this.props.profile.get('id') + "/edit"}>Edit Profile</a>
+            <Link to={`/people/${this.props.profile.get('id')}/edit`}>
+              <Button>
+                Edit profile
+              </Button>
+            </Link>
           </Col>
         </Row>
       </header>
