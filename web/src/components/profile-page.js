@@ -38,6 +38,9 @@ class ProfilePage extends Component {
             <small>Website</small>
             <p>{this.props.profile.get('website')}</p>
           </Col>
+          <Col sm={12}>
+            <a href={"/people/" + this.props.profile.get('id') + "/edit"}>Edit Profile</a>
+          </Col>
         </Row>
       </header>
     );
