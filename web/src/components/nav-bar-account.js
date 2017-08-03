@@ -43,7 +43,7 @@ class NavBarAccount extends Component {
           <DropdownToggle nav caret>
             {this.props.account.get('name')}
           </DropdownToggle>
-          <DropdownMenu>
+          <DropdownMenu right>
             <DropdownItem>
               <NavLink
                 to={`/people/${this.props.account.get('id')}`}
