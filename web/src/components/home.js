@@ -7,7 +7,7 @@ const Home = () => (
     <Row>
       <Col>
         <h1>gangplank</h1>
-        <p>yo yo yo check it out the gangplank web interface</p>
+        <p>yo yo yo dick! check it out the gangplank web interface</p>
       </Col>
     </Row>
   </Container>

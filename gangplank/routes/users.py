@@ -66,9 +66,9 @@ class UserResource(object):
         resp.body = json.dumps(result.data)
 
     @authentication_required
-    def on_put(self, req, resp, user_id):
-        if req.context['user'].id != user_id:
-            raise falcon.HTTPForbidden()
+    def on_patch(self, req, resp, user_id):
+        #if req.context['user'].id != user_id:
+        #    raise falcon.HTTPForbidden()
 
         user = User.objects(id=user_id).first()
 

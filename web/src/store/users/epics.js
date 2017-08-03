@@ -5,10 +5,13 @@ import { ajax } from '../../api';
 import {
   FETCH_USERS_PENDING,
   FETCH_USER_PENDING,
+  UPDATE_USER_PENDING,
   fetchUserComplete,
   fetchUserError,
   fetchUsersComplete,
   fetchUsersError,
+  updateUserComplete,
+  updateUserError,
 } from './actions';
 
 
@@ -28,8 +31,20 @@ const fetchUserEpic = action$ =>
       ),
     ).catch(error => Observable.of(fetchUserError(error)));
 
+const updateUserEpic = action$ =>
+  action$.ofType(UPDATE_USER_PENDING)
+    .mergeMap(action =>
+      ajax({
+        method: 'PATCH',
+        url: `/api/users/${action.payload.id}`,
+        body: action.payload,
+      }).map(
+        ({ response }) => updateUserComplete(response),
+      ).catch(error => Observable.of(updateUserError(error)))
+    );
 
 export {
   fetchUsersEpic,
   fetchUserEpic,
+  updateUserEpic,
 };

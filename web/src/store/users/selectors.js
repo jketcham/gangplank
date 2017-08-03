@@ -12,8 +12,11 @@ const getPerson = createSelector(
   getPeople,
   (id, people) => people.get(id));
 
+const getUserErrors = () => ({});
+
 
 export {
   getPeople,
   getPerson,
+  getUserErrors,
 };
