@@ -84,7 +84,7 @@ class EditProfilePage extends Component {
         <Container>
           <Row>
             <Col sm={12}>
-              <Link to={`/users/${this.props.account.get('id')}`}>
+              <Link to={`/people/${this.props.account.get('id')}`}>
                 Back to profile page
               </Link>
             </Col>
