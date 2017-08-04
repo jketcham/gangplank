@@ -3,7 +3,7 @@ import json
 import falcon
 import bcrypt
 
-from mongoengine import NotUniqueError
+from mongoengine import NotUniqueError, ValidationError
 from graceful.authorization import authentication_required
 
 from gangplank.models import User
@@ -67,7 +67,7 @@ class UserResource(object):
 
     @authentication_required
     def on_patch(self, req, resp, user_id):
-        #if req.context['user'].id != user_id:
+        # if req.context['user'].id != user_id:
         #    raise falcon.HTTPForbidden()
 
         user = User.objects(id=user_id).first()
@@ -82,7 +82,11 @@ class UserResource(object):
 
         for key, value in result.items():
             setattr(user, key, value)
-        user.save()
+
+        try:
+            user.save()
+        except ValidationError as err:
+            raise falcon.HTTPBadRequest('Invalid data', err.to_dict())
 
         user_schema = UserSchema()
         user_result = user_schema.dump(user)
