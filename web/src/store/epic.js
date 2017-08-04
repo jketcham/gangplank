@@ -16,9 +16,11 @@ const rootEpic = combineEpics(
   eventEpics.fetchEventEpic,
   eventEpics.fetchEventsEpic,
   eventEpics.updateEventEpic,
+  eventEpics.updateEventNavigateEpic,
   userEpics.fetchUserEpic,
   userEpics.fetchUsersEpic,
   userEpics.updateUserEpic,
+  userEpics.updateUserNavigateEpic,
 );
 
 

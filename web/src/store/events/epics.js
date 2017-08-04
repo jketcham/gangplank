@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 import { handleError } from '../../api';
 
 import {
@@ -7,6 +9,7 @@ import {
   FETCH_EVENTS_PENDING,
   FETCH_EVENT_PENDING,
   UPDATE_EVENT_PENDING,
+  UPDATE_EVENT_COMPLETE,
   createEventComplete,
   createEventError,
   deleteEventComplete,
@@ -59,9 +62,13 @@ const updateEventEpic = (action$, store, { ajax, push }) =>
         body: action.payload,
       }).map(
         ({ response }) => updateEventComplete(response),
-      ).map(({ payload }) =>
-        push(`/events/${action.payload.id}`),
       ).catch(handleError(updateEventError)),
+    );
+
+const updateEventNavigateEpic = (action$, store, { push }) =>
+  action$.ofType(UPDATE_EVENT_COMPLETE)
+    .mergeMap(action =>
+      Observable.of(push(`/events/${action.payload.id}`)),
     );
 
 const deleteEventEpic = (action$, store, { ajax }) =>
@@ -87,4 +94,5 @@ export {
   fetchEventEpic,
   fetchEventsEpic,
   updateEventEpic,
+  updateEventNavigateEpic,
 };

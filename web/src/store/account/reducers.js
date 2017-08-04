@@ -6,6 +6,7 @@ import {
   REGISTER_COMPLETE,
   LOGOUT_COMPLETE,
 } from './actions';
+import { UPDATE_USER_COMPLETE } from '../users/actions';
 
 
 let user = window.localStorage.getItem('user');
@@ -24,9 +25,17 @@ const handleSessionCreate = (state, action) =>
 const handleLogout = (state, action) =>
   INITIAL_STATE.clear();
 
+const handleUpdateUserComplete = (state, { payload }) => {
+  if (payload.id !== state.get('id')) {
+    return state;
+  }
+  return state.merge(payload);
+};
+
 
 export default createReducer(INITIAL_STATE, {
   [LOGIN_COMPLETE]: handleSessionCreate,
   [REGISTER_COMPLETE]: handleSessionCreate,
   [LOGOUT_COMPLETE]: handleLogout,
+  [UPDATE_USER_COMPLETE]: handleUpdateUserComplete,
 });

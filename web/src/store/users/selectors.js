@@ -1,22 +1,23 @@
 import { createSelector } from 'reselect';
 
 
-const getPeople = state =>
+const getUsers = state =>
   state.getIn(['entities', 'users']);
 
-const getPersonId = (state, props) =>
+const getUserId = (state, props) =>
   props.match.params.userId;
 
-const getPerson = createSelector(
-  getPersonId,
-  getPeople,
-  (id, people) => people.get(id));
+const getUser = createSelector(
+  getUserId,
+  getUsers,
+  (id, users) => users.get(id));
 
-const getUserErrors = () => ({});
+const getUserErrors = state =>
+  state.getIn(['ui', 'users', 'errors']);
 
 
 export {
-  getPeople,
-  getPerson,
+  getUser,
   getUserErrors,
+  getUsers,
 };
