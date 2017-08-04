@@ -54,8 +54,14 @@ class ControlledForm extends Component {
 
   getFieldError(fieldName) {
     // combine errors returned from API and component levels
-    const errors = this.props.errors.getIn(['description', fieldName], new List())
-      .merge(this.state.formValues.getIn([fieldName, 'error'], new List()));
+    // TODO: update all descriptions on the errors prop are arrays, so we don't
+    // have to first make it a list and then flatten it. Mongoengine returns a
+    // single string for error description and marshmallow returns a list.
+    const errors = List.of(
+      this.props.errors.getIn(['description', fieldName], new List()),
+    ).merge(
+      this.state.formValues.getIn([fieldName, 'error'], new List()),
+    ).flatten(true);
 
     if (errors.isEmpty()) {
       return undefined;

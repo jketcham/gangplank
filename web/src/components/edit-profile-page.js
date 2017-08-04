@@ -1,16 +1,15 @@
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
 import { fetchUser, updateUser } from '../store/users/actions';
 import { getUser, getUserErrors } from '../store/users/selectors';
-
 import { getAccount } from '../store/account/selectors';
+
 import ControlledForm from './controlled-form';
 
 
@@ -36,14 +35,16 @@ const EDIT_PROFILE_FIELDS = new Immutable.OrderedSet([
 class EditProfilePage extends Component {
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-    profileError: ImmutablePropTypes.map.isRequired,
+    user: ImmutablePropTypes.map.isRequired,
+    userErrors: ImmutablePropTypes.map.isRequired,
     fetchUser: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired,
     updateUser: PropTypes.func.isRequired,
+    match: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
-    account: null,
+    user: null,
+    userErrors: new Immutable.Map(),
   };
 
   componentWillMount() {
@@ -51,7 +52,7 @@ class EditProfilePage extends Component {
   }
 
   handleSubmit = (data) => {
-    const updatedData = this.props.account.reduce((result, value, key) => {
+    const updatedData = this.props.user.reduce((result, value, key) => {
       if (data[key] === value) {
         return result;
       }
@@ -59,7 +60,7 @@ class EditProfilePage extends Component {
       return result;
     }, {});
 
-    this.props.updateUser({ id: this.props.account.get('id'), ...updatedData });
+    this.props.updateUser({ id: this.props.user.get('id'), ...updatedData });
   }
 
   renderForm() {
@@ -67,15 +68,16 @@ class EditProfilePage extends Component {
       <ControlledForm
         actionTitle="Edit profile"
         fields={EDIT_PROFILE_FIELDS}
-        errors={new Immutable.Map()}
-        values={this.props.account}
+        errors={this.props.userErrors}
+        values={this.props.user}
         onSubmit={this.handleSubmit}
       />
     );
   }
 
   render() {
-    if (!this.props.account) {
+    // TODO: redirect if current account is not the user being edited
+    if (!this.props.user || !this.props.account) {
       return <div>Loading...</div>;
     }
 
@@ -84,14 +86,14 @@ class EditProfilePage extends Component {
         <Container>
           <Row>
             <Col sm={12}>
-              <Link to={`/people/${this.props.account.get('id')}`}>
+              <Link to={`/people/${this.props.user.get('id')}`}>
                 Back to profile page
               </Link>
             </Col>
           </Row>
           <Row>
             <Col sm={12}>
-              <h2>Edit {this.props.account.get('name')}</h2>
+              <h2>Edit {this.props.user.get('name')}</h2>
             </Col>
           </Row>
           <Row>
@@ -107,6 +109,7 @@ class EditProfilePage extends Component {
 
 const mapStateToProps = (state, props) => ({
   account: getAccount(state),
+  user: getUser(state, props),
   userErrors: getUserErrors(state),
 });
 
