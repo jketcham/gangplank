@@ -5,29 +5,29 @@ import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { getPeople } from '../store/users/selectors';
+import { getUsers } from '../store/users/selectors';
 import { fetchUsers } from '../store/users/actions';
 
 
 class PeoplePage extends Component {
   static propTypes = {
     fetchUsers: PropTypes.func.isRequired,
-    people: ImmutablePropTypes.list.isRequired,
+    users: ImmutablePropTypes.list.isRequired,
   };
 
   componentWillMount() {
     this.props.fetchUsers();
   }
 
-  renderPerson = person => (
-    <div key={person.get('id')}>
-      <Link to={`/people/${person.get('id')}`}>{person.get('name')}</Link>
+  renderUser = user => (
+    <div key={user.get('id')}>
+      <Link to={`/people/${user.get('id')}`}>{user.get('name')}</Link>
     </div>
   );
 
   render() {
     return (
-      <div className="people-page">
+      <div className="users-page">
         <Container>
           <Row>
             <Col>
@@ -36,7 +36,7 @@ class PeoplePage extends Component {
           </Row>
           <Row>
             <Col>
-              {this.props.people.map(this.renderPerson).toArray()}
+              {this.props.users.map(this.renderUser).toArray()}
             </Col>
           </Row>
         </Container>
@@ -46,7 +46,7 @@ class PeoplePage extends Component {
 }
 
 const mapStateToProps = state => ({
-  people: getPeople(state),
+  users: getUsers(state),
 });
 
 const mapDispatchToProps = {

@@ -5,10 +5,12 @@ import config from './config/reducers';
 import entities from './entities';
 import router from './router';
 import events from './events/reducers/ui';
+import users from './users/reducers/ui';
 
 
 const ui = combineReducers({
   events,
+  users,
 });
 
 

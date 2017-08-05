@@ -3,15 +3,18 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
-import { getPerson } from '../store/users/selectors';
+import { getAccount } from '../store/account/selectors';
+import { getUser } from '../store/users/selectors';
 import { fetchUser } from '../store/users/actions';
 
 
 class ProfilePage extends Component {
   static propTypes = {
     fetchUser: PropTypes.func.isRequired,
+    account: ImmutablePropTypes.map.isRequired,
     profile: ImmutablePropTypes.map.isRequired,
     match: PropTypes.object.isRequired,
   };
@@ -24,9 +27,31 @@ class ProfilePage extends Component {
     this.props.fetchUser({ id: this.props.match.params.userId });
   }
 
+  renderEditButton() {
+    if (this.props.account.get('id') !== this.props.profile.get('id')) {
+      return null;
+    }
+
+    return (
+      <Link
+        className="float-right"
+        to={`/people/${this.props.profile.get('id')}/edit`}
+      >
+        <Button>
+          Edit profile
+        </Button>
+      </Link>
+    );
+  }
+
   renderHeader() {
     return (
       <header className="profile-page__header">
+        <Row>
+          <Col sm={12}>
+            {this.renderEditButton()}
+          </Col>
+        </Row>
         <Row>
           <Col sm={6}>
             <small>Name</small>
@@ -55,7 +80,8 @@ class ProfilePage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  profile: getPerson(state, props),
+  profile: getUser(state, props),
+  account: getAccount(state),
 });
 
 const mapDispatchToProps = {

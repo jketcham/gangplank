@@ -16,7 +16,7 @@ import EventsPage from './components/events-page';
 import HomePage from './components/home';
 import PeoplePage from './components/people-page';
 import ProfilePage from './components/profile-page';
-
+import EditProfilePage from './components/edit-profile-page';
 // TODO: code-split routes: /events/create
 
 const router = (
@@ -32,7 +32,8 @@ const router = (
         </Switch>
         <Switch>
           <ProtectedRoute exact path="/people" component={PeoplePage} />
-          <ProtectedRoute path="/people/:userId" component={ProfilePage} />
+          <ProtectedRoute exact path="/people/:userId" component={ProfilePage} />
+          <ProtectedRoute exact path="/people/:userId/edit" component={EditProfilePage} />
         </Switch>
         <Route exact path="/login" component={AccountPage} />
         <Route exact path="/register" component={AccountPage} />

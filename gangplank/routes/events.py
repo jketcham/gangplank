@@ -39,7 +39,11 @@ class EventResource(object):
 
         for key, value in result.items():
             setattr(event, key, value)
-        event.save()
+
+        try:
+            event.save()
+        except ValidationError as err:
+            raise falcon.HTTPBadRequest('Invalid data', err.to_dict())
 
         event_schema = EventSchema()
         event_result = event_schema.dump(event)

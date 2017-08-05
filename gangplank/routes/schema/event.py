@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 from .user import EmbeddedUserSchema
 
@@ -21,16 +21,20 @@ class EventSchema(Schema):
 class CreateEventSchema(EventSchema):
     name = fields.String(required=True)
     description = fields.String(required=True)
-    start = fields.DateTime()
-    end = fields.DateTime()
+    start = fields.DateTime(required=True)
+    end = fields.DateTime(required=True)
     request_promotion = fields.Bool()
 
 
 class UpdateEventSchema(EventSchema):
-    name = fields.String()
-    description = fields.String()
-    location = fields.String()
+    name = fields.String(required=True)
+    description = fields.String(validate=[
+        validate.Length(max=1000),
+    ])
+    location = fields.String(validate=[
+        validate.Length(max=100),
+    ])
 
-    start = fields.DateTime()
-    end = fields.DateTime()
+    start = fields.DateTime(required=True)
+    end = fields.DateTime(required=True)
     request_promotion = fields.Bool()

@@ -5,6 +5,7 @@ import { createReducer } from 'redux-immutablejs';
 import {
   CREATE_EVENT_ERROR,
   UPDATE_EVENT_ERROR,
+  UPDATE_EVENT_COMPLETE,
   FETCH_EVENTS_COMPLETE,
   FETCH_EVENTS_ERROR,
   FETCH_EVENTS_PENDING,
@@ -52,10 +53,14 @@ const handleFetchEventsError = (state, { payload: error }) =>
 const handleEventError = (state, { payload }) =>
   state.set('errors', Immutable.fromJS(payload.errors));
 
+const handleEventUpdateComplete = (state, { payload }) =>
+  state.set('errors', INITIAL_STATE.get('errors'));
+
 
 export default createReducer(INITIAL_STATE, {
   [CREATE_EVENT_ERROR]: handleEventError,
   [UPDATE_EVENT_ERROR]: handleEventError,
+  [UPDATE_EVENT_COMPLETE]: handleEventUpdateComplete,
   [FETCH_EVENT_PENDING]: handleFetchEventPending,
   [FETCH_EVENT_ERROR]: handleFetchEventError,
   [FETCH_EVENT_COMPLETE]: handleFetchEventComplete,
