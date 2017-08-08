@@ -1,0 +1,38 @@
+// events
+
+
+.events-list__section {
+  position: relative;
+  padding-top: 50px;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.events-list__section__date {
+  display: inline-block;
+  float: left;
+  border: 1px solid black;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  transform: rotate(-90deg);
+
+  span {
+    display: block;
+    text-transform: uppercase;
+  }
+}
+
+.events-list__section__day {
+  position: absolute;
+  top: 0;
+  left: 80px;
+  width: 100%;
+  background-color: @black;
+  color: @white;
+  font-size: 24px;
+}
+
+.events-list__section__list {
+  padding-left: 80px;
+}

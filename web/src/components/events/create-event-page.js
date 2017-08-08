@@ -7,9 +7,9 @@ import moment from 'moment';
 import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import { createEvent, fetchEvents } from '../store/events/actions';
-import { getEvents, getEventErrors } from '../store/events/selectors';
-import ControlledForm from './controlled-form';
+import { createEvent, fetchEvents } from '../../store/events/actions';
+import { getEvents, getEventErrors } from '../../store/events/selectors';
+import ControlledForm from '../controlled-form';
 
 
 const CREATE_EVENT_FIELDS = new Immutable.OrderedSet([

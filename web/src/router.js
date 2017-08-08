@@ -9,10 +9,10 @@ import ProtectedRoute from './components/protected-route';
 
 import App from './components/app';
 import AccountPage from './components/account/page';
-import EventPage from './components/event-page';
-import EditEventPage from './components/edit-event-page';
-import CreateEventPage from './components/create-event-page';
-import EventsPage from './components/events-page';
+import EventPage from './components/events/event-page';
+import EditEventPage from './components/events/edit-event-page';
+import CreateEventPage from './components/events/create-event-page';
+import EventsPage from './components/events/events-page';
 import HomePage from './components/home';
 import PeoplePage from './components/people-page';
 import ProfilePage from './components/profile-page';

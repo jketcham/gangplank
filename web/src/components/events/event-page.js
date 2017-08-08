@@ -6,15 +6,15 @@ import { Button, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { getAccount } from '../store/account/selectors';
-import { getEvent, getEventLoading } from '../store/events/selectors';
-import { fetchEvent } from '../store/events/actions';
+import { getAccount } from '../../store/account/selectors';
+import { getEvent, getEventLoading } from '../../store/events/selectors';
+import { fetchEvent } from '../../store/events/actions';
 
 
 const EventInfo = ({ event }) => (
   <section className="event-info">
     <div className="event-info__header">
-      <h4>{event.get('name')}</h4>
+      <h1 className="gp-entity__title">{event.get('name')}</h1>
       <Link to={`/people/${event.getIn(['owner', 'id'])}`}>
         {event.getIn(['owner', 'name'])}
       </Link>

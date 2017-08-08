@@ -8,10 +8,10 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import { deleteEvent, fetchEvent, updateEvent } from '../store/events/actions';
-import { getEvent, getEventErrors } from '../store/events/selectors';
-import { getAccount } from '../store/account/selectors';
-import ControlledForm from './controlled-form';
+import { deleteEvent, fetchEvent, updateEvent } from '../../store/events/actions';
+import { getEvent, getEventErrors } from '../../store/events/selectors';
+import { getAccount } from '../../store/account/selectors';
+import ControlledForm from '../controlled-form';
 
 
 const EDIT_EVENT_FIELDS = new Immutable.OrderedSet([

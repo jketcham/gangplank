@@ -52,7 +52,7 @@ class NavBarAccount extends Component {
             </DropdownItem>
             <DropdownItem>
               <NavLink
-                to={`/events?creator=${this.props.account.get('id')}`}
+                to={`/events?owner=${this.props.account.get('id')}`}
                 className="nav-link"
               >Your events</NavLink>
             </DropdownItem>
