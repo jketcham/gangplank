@@ -1,5 +1,16 @@
-const getEvents = state =>
-  state.getIn(['entities', 'events']).toList();
+import { createSelector } from 'reselect';
+
+const getEventEntities = state =>
+  state.getIn(['entities', 'events']);
+
+const getEventIds = state =>
+  state.getIn(['ui', 'events', 'ids']);
+
+const getEvents = createSelector(
+  getEventIds,
+  getEventEntities,
+  (ids, events) => ids.map(id => events.get(id)),
+);
 
 const getEventsLoading = state =>
   state.getIn(['ui', 'events', 'loading']);

@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 import { handleError } from '../../api';
 
+import { EventsURI, EventURI } from '../../uris/api/events';
 import {
   CREATE_EVENT_PENDING,
   DELETE_EVENT_PENDING,
@@ -25,41 +26,41 @@ import {
 
 const fetchEventEpic = (action$, store, { ajax }) =>
   action$.ofType(FETCH_EVENT_PENDING)
-    .mergeMap(action =>
-      ajax(`/api/events/${action.payload.id}`).map(
+    .mergeMap(({ payload }) =>
+      ajax(EventURI.expand(payload)).map(
         ({ response }) => fetchEventComplete(response),
       ).catch(handleError(fetchEventError)),
     );
 
 const fetchEventsEpic = (action$, store, { ajax }) =>
   action$.ofType(FETCH_EVENTS_PENDING)
-    .mergeMap(action =>
-      ajax('/api/events').map(
+    .mergeMap(({ payload }) =>
+      ajax(EventsURI.expand(payload.query)).map(
         ({ response }) => fetchEventsComplete(response),
       ).catch(handleError(fetchEventsError)),
     );
 
 const createEventEpic = (action$, store, { ajax, push }) =>
   action$.ofType(CREATE_EVENT_PENDING)
-    .mergeMap(action =>
+    .mergeMap(({ payload }) =>
       ajax({
         method: 'POST',
         url: '/api/events',
-        body: action.payload,
+        body: payload,
       }).map(({ response }) =>
         createEventComplete(response),
-      ).map(({ payload }) =>
-        push(`/events/${payload.id}`),
+      ).map(action =>
+        push(`/events/${action.payload.id}`),
       ).catch(handleError(createEventError)),
     );
 
 const updateEventEpic = (action$, store, { ajax, push }) =>
   action$.ofType(UPDATE_EVENT_PENDING)
-    .mergeMap(action =>
+    .mergeMap(({ payload }) =>
       ajax({
         method: 'PATCH',
-        url: `/api/events/${action.payload.id}`,
-        body: action.payload,
+        url: `/api/events/${payload.id}`,
+        body: payload,
       }).map(
         ({ response }) => updateEventComplete(response),
       ).catch(handleError(updateEventError)),
@@ -67,8 +68,8 @@ const updateEventEpic = (action$, store, { ajax, push }) =>
 
 const updateEventNavigateEpic = (action$, store, { push }) =>
   action$.ofType(UPDATE_EVENT_COMPLETE)
-    .mergeMap(action =>
-      Observable.of(push(`/events/${action.payload.id}`)),
+    .mergeMap(({ payload }) =>
+      Observable.of(push(`/events/${payload.id}`)),
     );
 
 const deleteEventEpic = (action$, store, { ajax }) =>

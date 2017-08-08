@@ -16,7 +16,7 @@ import {
 
 
 const INITIAL_STATE = new Immutable.Map({
-  events: new Immutable.Map(),
+  ids: new Immutable.List(),
   loading: false,
   errors: new Immutable.Map({ title: '', description: new Immutable.Map() }),
 });
@@ -38,11 +38,12 @@ const handleFetchEventComplete = (state, action) =>
   state.set('loading', false);
 
 const handleFetchEventsComplete = (state, { payload }) =>
-  state.merge({
-    loading: false,
-    error: false,
-    results: _.map(payload.results, 'id'),
-  });
+  state.withMutations(nextState =>
+    nextState
+    .set('loading', false)
+    .set('error', false)
+    .set('ids', new Immutable.List(_.map(payload.results, 'id'))),
+  );
 
 const handleFetchEventsError = (state, { payload: error }) =>
   state.merge({
