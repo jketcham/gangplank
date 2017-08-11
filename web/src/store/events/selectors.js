@@ -1,10 +1,18 @@
 import { createSelector } from 'reselect';
 
+const getEventsUI = state =>
+  state.getIn(['ui', 'events']);
+
+const getEvent = (state, props) =>
+  state.getIn(['entities', 'events', props.match.params.eventId]);
+
 const getEventEntities = state =>
   state.getIn(['entities', 'events']);
 
-const getEventIds = state =>
-  state.getIn(['ui', 'events', 'ids']);
+const getEventIds = createSelector(
+  getEventsUI,
+  state => state.get('ids'),
+);
 
 const getEvents = createSelector(
   getEventIds,
@@ -12,29 +20,26 @@ const getEvents = createSelector(
   (ids, events) => ids.map(id => events.get(id)),
 );
 
-const getEventsLoading = state =>
-  state.getIn(['ui', 'events', 'loading']);
+const getEventsLoading = createSelector(
+  getEventsUI,
+  state => state.get('loading'),
+);
 
-const getEvent = (state, props) =>
-  state.getIn(['entities', 'events', props.match.params.eventId]);
+const getEventsMeta = createSelector(
+  getEventsUI,
+  state => state.get('meta'),
+);
 
-const getEventLoading = state =>
-  state.getIn(['ui', 'events', 'loading']);
-
-const getEventErrors = state =>
-  state.getIn(['ui', 'events', 'errors']);
-
-// TODO: re-add when events state updated
-// const getEventLoading = createSelector(
-//   getEvent,
-//   event => event.get('loading'),
-// );
+const getEventErrors = createSelector(
+  getEventsUI,
+  state => state.get('errors'),
+);
 
 
 export {
   getEvent,
   getEventErrors,
-  getEventLoading,
-  getEvents,
   getEventsLoading,
+  getEvents,
+  getEventsMeta,
 };

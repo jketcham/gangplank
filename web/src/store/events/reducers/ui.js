@@ -17,6 +17,7 @@ import {
 
 const INITIAL_STATE = new Immutable.Map({
   ids: new Immutable.List(),
+  meta: new Immutable.Map(),
   loading: false,
   errors: new Immutable.Map({ title: '', description: new Immutable.Map() }),
 });
@@ -42,7 +43,8 @@ const handleFetchEventsComplete = (state, { payload }) =>
     nextState
     .set('loading', false)
     .set('error', false)
-    .set('ids', new Immutable.List(_.map(payload.results, 'id'))),
+    .set('meta', Immutable.fromJS(payload.meta))
+    .set('ids', new Immutable.List(_.map(payload.content, 'id'))),
   );
 
 const handleFetchEventsError = (state, { payload: error }) =>

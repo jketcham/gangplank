@@ -27,7 +27,7 @@ const handleFetchEventPending = (state, { payload }) =>
   state;
 
 const handleFetchEventsComplete = (state, { payload }) =>
-  state.mergeDeep(_.keyBy(payload.results, 'id'));
+  state.mergeDeep(_.keyBy(payload.content, 'id'));
 
 const handleEventCreate = (state, { payload }) =>
   state.set(payload.id, Immutable.fromJS(payload));
