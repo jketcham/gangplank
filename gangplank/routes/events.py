@@ -1,13 +1,19 @@
 import json
-from datetime import datetime
 
 import falcon
 from mongoengine.errors import ValidationError
 
 from gangplank.models import Event
+from graceful.parameters import StringParam
 from graceful.authorization import authentication_required
+from graceful.resources.generic import ListResource
+from graceful.resources.mixins import PaginatedMixin
 
-from .schema.event import EventSchema, CreateEventSchema, UpdateEventSchema
+from .schema.event import (
+    EventSchema,
+    CreateEventSchema,
+    UpdateEventSchema,
+)
 
 
 class EventResource(object):
@@ -64,14 +70,45 @@ class EventResource(object):
         resp.status = falcon.HTTP_204
 
 
-class EventsResource(object):
-    def on_get(self, req, resp):
-        events = Event.objects(start__gte=datetime.now()).order_by('start')
+def make_queryset(params):
+    query_args = {}
+
+    for key, value in params.items():
+        if value:
+            query_args[key] = value
+
+    return query_args
+
+
+class EventsResource(ListResource, PaginatedMixin):
+    owner = StringParam('owner id of events')
+    start_gt = StringParam('minimum date of event start')
+    start_lt = StringParam('maximum date of event\'s start')
+    order = StringParam('field to order events by', 'start')
+
+    def list(self, params, meta):
+        query = {
+            'owner__id': params.get('owner'),
+            'start__gt': params.get('start_gt'),
+            'start__lt': params.get('start_lt'),
+        }
+
+        events = Event.objects(**make_queryset(query)).order_by(params.get('order'))
+        paginated_events = events.skip(
+            params['page'] * params['page_size']
+        ).limit(params['page_size'])
+
+        if events.count() > (params['page'] + 1) * params['page_size']:
+            meta['has_more'] = True
+        else:
+            meta['has_more'] = False
 
         event_schema = EventSchema(many=True)
-        result = event_schema.dump(events)
+        result = event_schema.dump(paginated_events)
 
-        resp.body = json.dumps({'results': result.data})
+        self.add_pagination_meta(params, meta)
+
+        return result.data
 
     @authentication_required
     def on_post(self, req, resp):
