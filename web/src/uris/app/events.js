@@ -2,7 +2,7 @@ import ResourceURI from '../resource-uri';
 
 
 const EventsURI = new ResourceURI({
-  pathname: '/api/events',
+  pathname: '/events',
   query: '{?order,start_gt,start_lt,owner,page,page_size}',
   defaultQuery: {
     start_gt: new Date().toISOString(),
@@ -10,9 +10,5 @@ const EventsURI = new ResourceURI({
   },
 });
 
-const EventURI = new ResourceURI({
-  pathname: '/api/events/{id}',
-});
 
-
-export { EventsURI, EventURI };
+export { EventsURI };
