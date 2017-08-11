@@ -3,12 +3,26 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Container, Row, Col, Button } from 'reactstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Nav,
+  NavItem,
+  NavLink,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { getEvents, getEventsLoading } from '../../store/events/selectors';
+import { EventsURI } from '../../uris/app/events';
+import {
+  getEvents,
+  getEventsLoading,
+  getEventsMeta,
+} from '../../store/events/selectors';
 import { fetchEvents } from '../../store/events/actions';
+import Pagination from '../pagination';
 import EventListItem from './event-list-item';
 
 
@@ -39,6 +53,7 @@ class EventsPage extends Component {
     events: ImmutablePropTypes.list.isRequired,
     isLoading: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
+    meta: ImmutablePropTypes.map.isRequired,
   };
 
   componentDidMount() {
@@ -49,6 +64,10 @@ class EventsPage extends Component {
     if (this.props.location.search !== nextProps.location.search) {
       this.props.fetchEvents({ query: nextProps.location.search });
     }
+  }
+
+  getQuery(query) {
+    return EventsURI.expand(query);
   }
 
   renderEvents() {
@@ -71,11 +90,50 @@ class EventsPage extends Component {
   renderContent() {
     if (this.props.isLoading) {
       return (
-        <em>Loading...</em>
+        <div className="events-list">
+          <em>Loading...</em>
+        </div>
       );
     }
 
-    return this.renderEvents();
+    return (
+      <div className="events-list">
+        {this.renderEvents()}
+      </div>
+    );
+  }
+
+  renderTabs() {
+    const futureQuery = this.getQuery();
+    const pastQuery = this.getQuery({
+      start_lt: new Date().toISOString(),
+      start_gt: new Date(0).toISOString(),
+      sort: '-start',
+    });
+
+    return (
+      <Nav pills>
+        <NavItem>
+          <NavLink tag={Link} to={futureQuery}>
+            Upcoming
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink tag={Link} to={pastQuery}>
+            Past
+          </NavLink>
+        </NavItem>
+      </Nav>
+    );
+  }
+
+  renderPagination() {
+    return (
+      <Pagination
+        uri={EventsURI}
+        meta={this.props.meta}
+      />
+    );
   }
 
   render() {
@@ -94,7 +152,13 @@ class EventsPage extends Component {
           </Row>
           <Row>
             <Col>
+              {this.renderTabs()}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
               {this.renderContent()}
+              {this.renderPagination()}
             </Col>
           </Row>
         </Container>
@@ -105,6 +169,7 @@ class EventsPage extends Component {
 
 const mapStateToProps = state => ({
   events: getEvents(state),
+  meta: getEventsMeta(state),
   isLoading: getEventsLoading(state),
 });
 

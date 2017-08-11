@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { getAccount } from '../../store/account/selectors';
-import { getEvent, getEventLoading } from '../../store/events/selectors';
+import { getEvent, getEventsLoading } from '../../store/events/selectors';
 import { fetchEvent } from '../../store/events/actions';
 
 
@@ -100,7 +100,7 @@ class EventPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   account: getAccount(state),
-  isLoading: getEventLoading(state, props),
+  isLoading: getEventsLoading(state, props),
   event: getEvent(state, props),
 });
 
