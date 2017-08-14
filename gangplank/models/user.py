@@ -35,6 +35,10 @@ class User(Document):
         self.roles.append(roles)
         self.save()
 
+    def remove_roles(self, roles):
+        self.roles.pull_all(roles)
+        self.save()
+
     def check_password(self, password):
         if not password:
             return False

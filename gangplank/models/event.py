@@ -7,6 +7,7 @@ from mongoengine import (
     EmbeddedDocumentListField,
     EmbeddedDocumentField,
     StringField,
+    queryset_manager,
 )
 
 from .user import EmbeddedUser
@@ -39,5 +40,6 @@ class Event(Document):
     def is_owner(self, user_id):
         return user_id == self.owner.id
 
+    @queryset_manager
     def verified_events(doc_cls, queryset):
         return queryset.filter(verified=True)
