@@ -1,14 +1,9 @@
-import os
-import importlib
-
+from gangplank.config import config
 from gangplank.models import User
 from gangplank.authentication import JWTAuthStorage
 
 
-# TODO: cleanup accessing config
-env = os.environ.get('ENV', 'default')
-secret = os.environ.get('GP_SECRET', 'not_a_secret')
-config = importlib.import_module('config.' + env)
+secret = config.get('GP_SECRET', 'not_a_secret')
 
 
 def user_loader(payload):
