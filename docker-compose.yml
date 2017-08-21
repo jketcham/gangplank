@@ -20,12 +20,32 @@ services:
       - mongo
       - nginx
     environment:
+      - MAILGUN_PASS=${MAILGUN_PASS}
       - VIRTUAL_HOST=gangplank.local
       - VIRTUAL_PORT=80
     ports:
       - "8000:8000"
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    command: celery worker --loglevel info --app gangplank.celery
+    volumes:
+      - .:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      - server
+      - rabbit
   mongo:
     image: "mongo:3.4.5"
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+  rabbit:
+    image: "rabbitmq:3.6-management-alpine"
+    ports:
+      - '127.0.0.1:5672:5672'
+      - '127.0.0.1:15672:15672'
     restart: unless-stopped
   nginx:
     image: nginx

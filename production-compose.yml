@@ -7,15 +7,28 @@ services:
       - mongo
       - nginx
     environment:
-      - VIRTUAL_HOST=chandler.gangplank.space
+      - MAILGUN_PASS=${MAILGUN_PASS}
+      - VIRTUAL_HOST=chandler.gangplank.community
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=chandler.gangplank.space
+      - LETSENCRYPT_HOST=chandler.gangplank.community
       - LETSENCRYPT_EMAIL=jack@jackketcham.com
+  celery:
+    build: .
+    command: celery worker --loglevel info --app gangplank.celery
+    volumes:
+      - .:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      - web
+      - rabbit
   mongo:
     image: "mongo:3.4.5"
     restart: unless-stopped
-  redis:
-    image: "redis:alpine"
+  rabbit:
+    image: "rabbitmq:3.6-management-alpine"
+    ports:
+      - '127.0.0.1:5672:5672'
+      - '127.0.0.1:15672:15672'
     restart: unless-stopped
   nginx:
     image: nginx
