@@ -12,7 +12,7 @@ import { fetchUsers } from '../store/users/actions';
 class PeoplePage extends Component {
   static propTypes = {
     fetchUsers: PropTypes.func.isRequired,
-    users: ImmutablePropTypes.list.isRequired,
+    users: ImmutablePropTypes.map.isRequired,
   };
 
   componentWillMount() {
