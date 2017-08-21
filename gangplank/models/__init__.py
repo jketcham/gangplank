@@ -1,8 +1,10 @@
-from .user import User
+from .activation import Activation
 from .event import Event
+from .user import User
 
 
 __all__ = [
-    'User',
+    'Activation',
     'Event',
+    'User',
 ]
