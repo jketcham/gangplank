@@ -4,7 +4,7 @@ import falcon
 from mongoengine import connect
 
 from .authentication import JWT
-from .routes import users, sessions, events, static, activation
+from .routes import users, sessions, events, static, activation, admin_events
 from .session import auth_storage
 from .config import config
 
@@ -19,6 +19,8 @@ def create_app(config):
     api.add_route('/api/events/{event_id}', events.EventResource())
     api.add_route('/api/session', sessions.Resource())
     api.add_route('/api/activations/{activation_code}', activation.ActivationResource())
+
+    api.add_route('/admin/events/{event_id}', admin_events.EventResource())
 
     # serve frontend
     api.add_sink(static.pass_to_frontend)
