@@ -11,7 +11,6 @@ const fetchEvent = createAction(FETCH_EVENT_PENDING);
 const fetchEventComplete = createAction(FETCH_EVENT_COMPLETE);
 const fetchEventError = createAction(FETCH_EVENT_ERROR);
 
-
 /** fetch events */
 
 const FETCH_EVENTS_PENDING = 'FETCH_EVENTS_PENDING';
@@ -51,6 +50,7 @@ const DELETE_EVENT_ERROR = 'DELETE_EVENT_ERROR';
 const deleteEvent = createAction(DELETE_EVENT_PENDING);
 const deleteEventComplete = createAction(DELETE_EVENT_COMPLETE);
 const deleteEventError = createAction(DELETE_EVENT_ERROR);
+
 
 export {
   CREATE_EVENT_COMPLETE,
