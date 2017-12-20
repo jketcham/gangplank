@@ -1,3 +1,5 @@
+HOST = 'http://localhost:8000'
+
 MONGO_DB = 'gangplank'
 MONGO_HOST = 'localhost'
 REDIS_HOST = 'localhost'
