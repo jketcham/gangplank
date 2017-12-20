@@ -27,7 +27,7 @@ class CreateEventSchema(EventSchema):
 
 
 class UpdateEventSchema(EventSchema):
-    name = fields.String(required=True)
+    name = fields.String()
     description = fields.String(validate=[
         validate.Length(max=1000),
     ])
@@ -35,6 +35,10 @@ class UpdateEventSchema(EventSchema):
         validate.Length(max=100),
     ])
 
-    start = fields.DateTime(required=True)
-    end = fields.DateTime(required=True)
+    start = fields.DateTime()
+    end = fields.DateTime()
     request_promotion = fields.Bool()
+
+
+class AdminUpdateEventSchema(UpdateEventSchema):
+    verified = fields.Bool()

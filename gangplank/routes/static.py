@@ -15,7 +15,7 @@ def load_template(name):
 
 def get_config():
     return {
-        'web_host': config.WEB_HOST,
+        'web_host': config.get('WEB_HOST'),
     }
 
 

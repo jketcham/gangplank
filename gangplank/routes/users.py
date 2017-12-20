@@ -6,8 +6,11 @@ import bcrypt
 from mongoengine import NotUniqueError, ValidationError
 from graceful.authorization import authentication_required
 
-from gangplank.models import User
+from gangplank.tasks.email import send
+from gangplank.emails import user_join
+from gangplank.models import User, Activation
 from gangplank.session import auth_storage
+from gangplank.config import config
 
 from .schema.user import CreateUserSchema, UserSchema, UpdateUserSchema, UserJWTSchema
 
@@ -41,6 +44,19 @@ class UsersResource(object):
             ).save()
         except NotUniqueError:
             raise falcon.HTTPBadRequest('Account already exists')
+
+        activation = Activation(user=user.id)
+        activation.save()
+
+        context = {
+            'name': result['name'],
+            'activation_link': '{}/api/activations/{}'.format(config['HOST'], activation.code),
+        }
+        recipient = '{} <{}>'.format(result['name'], result['email'])
+        send.delay(
+            *user_join.generate(recipient, context),
+            mailgun_pass=config.get('MAILGUN_PASS')
+        )
 
         user_schema = UserSchema()
         user_result = user_schema.dump(user)

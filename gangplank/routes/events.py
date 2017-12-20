@@ -2,12 +2,12 @@ import json
 
 import falcon
 from mongoengine.errors import ValidationError
-
-from gangplank.models import Event
 from graceful.parameters import StringParam
 from graceful.authorization import authentication_required
 from graceful.resources.generic import ListResource
 from graceful.resources.mixins import PaginatedMixin
+
+from gangplank.models import Event
 
 from .schema.event import (
     EventSchema,
@@ -93,7 +93,7 @@ class EventsResource(ListResource, PaginatedMixin):
             'start__lt': params.get('start_lt'),
         }
 
-        events = Event.objects(**make_queryset(query)).order_by(params.get('order'))
+        events = Event.verified_events(**make_queryset(query)).order_by(params.get('order'))
         paginated_events = events.skip(
             params['page'] * params['page_size']
         ).limit(params['page_size'])
