@@ -1,0 +1,19 @@
+{% extends "email.html" %}
+
+{% block title %}
+Welcome to gangplank!
+{% endblock %}
+
+{% block body %}
+<tr>
+  <td class="content-block">
+    Hi {{context.name}},
+  </td>
+</tr>
+<tr>
+  <td class="content-blocK">
+    Please confirm your email by clicking this link:
+    <a href="{{context.activation_link}}">{{context.activation_link}}</a>
+  </td>
+</tr>
+{% endblock %}
