@@ -26,7 +26,20 @@ const logout = createAction(LOGOUT_PENDING);
 const logoutComplete = createAction(LOGOUT_COMPLETE);
 
 
+/** activate */
+const ACTIVATE_PENDING = 'ACTIVATE_PENDING';
+const ACTIVATE_COMPLETE = 'ACTIVATE_COMPLETE';
+const ACTIVATE_ERROR = 'ACTIVATE_ERROR';
+
+const activate = createAction(ACTIVATE_PENDING);
+const activateComplete = createAction(ACTIVATE_COMPLETE);
+const activateError = createAction(ACTIVATE_ERROR);
+
+
 export {
+  ACTIVATE_COMPLETE,
+  ACTIVATE_ERROR,
+  ACTIVATE_PENDING,
   LOGIN_COMPLETE,
   LOGIN_ERROR,
   LOGIN_PENDING,
@@ -35,6 +48,9 @@ export {
   REGISTER_COMPLETE,
   REGISTER_ERROR,
   REGISTER_PENDING,
+  activate,
+  activateComplete,
+  activateError,
   login,
   loginComplete,
   loginError,

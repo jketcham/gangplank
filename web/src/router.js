@@ -17,6 +17,7 @@ import HomePage from './components/home';
 import PeoplePage from './components/people-page';
 import ProfilePage from './components/profile-page';
 import EditProfilePage from './components/edit-profile-page';
+import ActivateAccountPage from './components/activate-account';
 // TODO: code-split routes: /events/create
 
 const router = (
@@ -35,6 +36,7 @@ const router = (
           <ProtectedRoute exact path="/people/:userId" component={ProfilePage} />
           <ProtectedRoute exact path="/people/:userId/edit" component={EditProfilePage} />
         </Switch>
+        <Route exact path="/activate" component={ActivateAccountPage} />
         <Route exact path="/login" component={AccountPage} />
         <Route exact path="/register" component={AccountPage} />
       </App>

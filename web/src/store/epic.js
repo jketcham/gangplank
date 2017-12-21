@@ -7,6 +7,7 @@ import * as accountEpics from './account/epics';
 
 // TODO: get object spread operator working here?
 const rootEpic = combineEpics(
+  accountEpics.activateEpic,
   accountEpics.loginEpic,
   accountEpics.logoutEpic,
   accountEpics.registerEpic,

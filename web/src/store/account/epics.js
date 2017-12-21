@@ -6,6 +6,9 @@ import {
   LOGIN_PENDING,
   LOGOUT_PENDING,
   REGISTER_PENDING,
+  ACTIVATE_PENDING,
+  activateComplete,
+  activateError,
   loginComplete,
   loginError,
   logoutComplete,
@@ -61,5 +64,14 @@ const logoutRedirect = (action$, store, { push }) =>
 
 const logoutEpic = combineEpics(logoutStorage, logoutRedirect);
 
+// TODO: shit is dense
+const activateEpic = action$ =>
+  action$.ofType(ACTIVATE_PENDING)
+    .mergeMap(({ payload }) =>
+      ajax(`/api/activations/${payload.id}`)
+      .map(({ response }) => activateComplete(response))
+      .catch(handleError(activateError)),
+    );
 
-export { loginEpic, registerEpic, logoutEpic };
+
+export { loginEpic, registerEpic, logoutEpic, activateEpic };

@@ -50,7 +50,7 @@ class UsersResource(object):
 
         context = {
             'name': result['name'],
-            'activation_link': '{}/api/activations/{}'.format(config['HOST'], activation.code),
+            'activation_link': '{}/activate?id={}'.format(config['HOST'], activation.code),
         }
         recipient = '{} <{}>'.format(result['name'], result['email'])
         send.delay(
