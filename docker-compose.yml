@@ -36,6 +36,20 @@ services:
     depends_on:
       - server
       - rabbit
+    environment:
+      - ENV=dev
+      - MAILGUN_PASS=${MAILGUN_PASS}
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    command: celery beat --loglevel info --app gangplank.celery
+    volumes:
+      - .:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      - server
+      - rabbit
   mongo:
     image: "mongo:3.4.5"
     restart: unless-stopped
