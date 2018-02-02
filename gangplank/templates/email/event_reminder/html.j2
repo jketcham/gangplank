@@ -1,0 +1,23 @@
+{% extends "email.html" %}
+
+{% block title %}
+Event reminder
+{% endblock %}
+
+{% block body %}
+<tr>
+  <td class="content-block">
+    <p>Hi {{context.user_name}},</p>
+
+    {{context.event_name}} is happening tomorrow Gangplank Chandler!
+    {{context.event_start}} - {{context.event_end}}
+  </td>
+</tr>
+<tr>
+  <td class="content-blocK">
+    <p>
+      <a href="{{context.event_link}}">Check out the event details here.</a>
+    </p>
+  </td>
+</tr>
+{% endblock %}

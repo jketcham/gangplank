@@ -1,0 +1,12 @@
+{% extends "email.txt" %}
+
+{% block body %}
+Event reminder
+
+Hi {{context.user_name}},
+
+{{context.event_name}} is happening tomorrow Gangplank Chandler!
+{{context.event_start}} - {{context.event_end}}
+
+Check out the full event details here: {{context.event_link}}
+{% endblock %}
