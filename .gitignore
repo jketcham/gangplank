@@ -109,3 +109,6 @@ docker/nginx/conf.d/
 docker/nginx/data/
 docker/nginx/html/
 docker/nginx/vhost.d/
+
+# ignore celery-beat schedule file
+celerybeat-schedule
