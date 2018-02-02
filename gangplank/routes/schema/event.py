@@ -13,6 +13,8 @@ class EventSchema(Schema):
     start = fields.DateTime()
     end = fields.DateTime()
 
+    subscribed_users = fields.List(fields.String())
+
     request_promotion = fields.Bool()
     owner = fields.Nested(EmbeddedUserSchema())
     organizers = fields.List(fields.Nested(EmbeddedUserSchema()))

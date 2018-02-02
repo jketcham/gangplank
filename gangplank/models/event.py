@@ -7,10 +7,12 @@ from mongoengine import (
     EmbeddedDocumentListField,
     EmbeddedDocumentField,
     StringField,
+    ListField,
+    ObjectIdField,
     queryset_manager,
 )
 
-from .user import EmbeddedUser
+from .user import User, EmbeddedUser
 
 
 class Event(Document):
@@ -32,6 +34,8 @@ class Event(Document):
 
     request_promotion = BooleanField()
 
+    subscribed_users = ListField(ObjectIdField())
+
     date_created = DateTimeField(default=datetime.now)
     owner = EmbeddedDocumentField(EmbeddedUser)
     organizers = EmbeddedDocumentListField(EmbeddedUser)
@@ -39,6 +43,17 @@ class Event(Document):
 
     def is_owner(self, user_id):
         return user_id == self.owner.id
+
+    def get_subscribed_users(self):
+        users = []
+
+        for user_id in self.subscribed_users:
+            user = User.objects(id=user_id).first()
+            if not user:
+                continue
+            users.append(user)
+
+        return users
 
     @queryset_manager
     def verified_events(doc_cls, queryset):
